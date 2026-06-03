@@ -31,14 +31,6 @@ class OrderExecutor:
         Place a market order. Returns order result dict or None on failure.
         TP here is the final TP2 level; TP1 management is done in position_manager.
         """
-        # Validate inputs
-        if volume <= 0:
-            log.error(f"Invalid volume: {volume}")
-            return None
-        if sl <= 0 or tp <= 0:
-            log.error(f"Invalid SL={sl} or TP={tp}")
-            return None
-        
         mt5      = self._get_mt5()
         order_type = mt5.ORDER_TYPE_BUY if direction == 'BUY' else mt5.ORDER_TYPE_SELL
         tick     = mt5.symbol_info_tick(symbol)

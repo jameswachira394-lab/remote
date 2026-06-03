@@ -37,7 +37,7 @@ OB = {
 # SIGNAL / ENTRY
 # ══════════════════════════════════════════════
 SIGNAL = {
-    "wick_ratio":     1.5,   # Lower wick / body ratio for hammer confirmation
+    "wick_ratio":     1.2,   # Lower wick / body ratio for hammer confirmation (reduced)
     "engulf":         True,  # Also accept engulfing candles as confirmation
 }
 
@@ -62,10 +62,10 @@ RISK = {
 FILTERS = {
     "ema_1h_period":      600,   # 50-period × 12 bars ≈ 1H EMA on 5m data
     "atr_period":         14,
-    "min_atr_multiplier": 0.5,   # Signal ATR must be ≥ X × mean ATR
+    "min_atr_multiplier": 0.2,   # Signal ATR must be ≥ X × mean ATR (reduced from 0.5)
     # Trading sessions (UTC hours, inclusive) — set both to None to disable
-    "session_start_utc":  7,     # London open ≈ 07:00 UTC
-    "session_end_utc":    17,    # NY close ≈ 17:00 UTC
+    "session_start_utc":  None,  # Disabled for testing
+    "session_end_utc":    None,  # Disabled for testing
     "skip_news":          False, # Set True to enable news filter (requires API key)
 }
 

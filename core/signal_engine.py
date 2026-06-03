@@ -95,16 +95,21 @@ class SignalEngine:
         # 2. Confirmation candle
         confirmed, sig_type = self._confirmation(df, i, ob['type'])
         if not confirmed:
+            log.debug(f"OB@{ob['formation_bar']}: confirmation candle rejected (no hammer/engulf)")
             return None
 
         # 3. Trend filter
         if not self._trend_ok(df, i, sig_type):
-            log.debug(f"OB@{ob['timestamp']}: trend filter rejected {sig_type}")
+            price = df['Close'].iloc[i]
+            ema = df['EMA_1H'].iloc[i]
+            log.warning(f"OB@{ob['formation_bar']}: EMA trend filter rejected {sig_type} (price={price:.5f}, EMA={ema:.5f})")
             return None
 
         # 4. Volatility filter
         if not self._volatility_ok(df, i):
-            log.debug(f"OB@{ob['timestamp']}: volatility filter rejected")
+            atr_now = df['ATR'].iloc[i]
+            atr_mean = df['ATR'].mean()
+            log.warning(f"OB@{ob['formation_bar']}: ATR volatility filter rejected (ATR={atr_now:.4f}, mean={atr_mean:.4f}, min={atr_mean*0.5:.4f})")
             return None
 
         # 5. Build signal
