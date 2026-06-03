@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<!--
+  install_task.xml
+  Registers watcher.ps1 as a Windows Scheduled Task that runs at startup.
+
+  Import it with:
+    schtasks /create /xml "C:\TradingBot\ob_mt5_system\install_task.xml" /tn "OB Bot Watcher"
+
+  Or double-click it in Task Scheduler > Import Task.
+-->
+<Task version="1.4" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+  <RegistrationInfo>
+    <Description>OB Trading Bot — git pull watcher. Pulls changes and restarts bot automatically.</Description>
+    <Author>OB Bot</Author>
+  </RegistrationInfo>
+
+  <Triggers>
+    <!-- Start at system boot, wait 3 min for MT5 to connect first -->
+    <BootTrigger>
+      <Enabled>true</Enabled>
+      <Delay>PT3M</Delay>
+    </BootTrigger>
+  </Triggers>
+
+  <Principals>
+    <Principal id="Author">
+      <!-- Runs as the logged-in user with highest privileges -->
+      <LogonType>InteractiveToken</LogonType>
+      <RunLevel>HighestAvailable</RunLevel>
+    </Principal>
+  </Principals>
+
+  <Settings>
+    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+    <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
+    <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
+    <ExecutionTimeLimit>PT0S</ExecutionTimeLimit>  <!-- no time limit -->
+    <RestartOnFailure>
+      <Interval>PT1M</Interval>   <!-- restart watcher itself after 1 min if it crashes -->
+      <Count>10</Count>
+    </RestartOnFailure>
+    <Enabled>true</Enabled>
+  </Settings>
+
+  <Actions>
+    <Exec>
+      <Command>powershell.exe</Command>
+      <Arguments>-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "C:\TradingBot\ob_mt5_system\watcher.ps1"</Arguments>
+      <WorkingDirectory>C:\TradingBot\ob_mt5_system</WorkingDirectory>
+    </Exec>
+  </Actions>
+</Task>

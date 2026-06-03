@@ -1,0 +1,6 @@
+# .gitignore
+config/settings.py
+logs/
+charts/
+__pycache__/
+*.pyc
