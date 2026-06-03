@@ -126,6 +126,16 @@ class SignalEngine:
         if risk <= 0:
             return None
 
+        # Validate TP levels
+        if sig_type == 'BUY':
+            if tp1 >= tp2:
+                log.warning(f"Invalid TP levels for BUY: TP1={tp1:.5f} >= TP2={tp2:.5f}")
+                return None
+        else:  # SELL
+            if tp1 <= tp2:
+                log.warning(f"Invalid TP levels for SELL: TP1={tp1:.5f} <= TP2={tp2:.5f}")
+                return None
+
         ob['active'] = False  # prevent duplicate signals on the same OB
 
         signal = {

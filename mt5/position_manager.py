@@ -60,6 +60,9 @@ class PositionManager:
         Returns list of position summary dicts.
         """
         positions = self._get_positions()
+        if not positions:
+            # Clean up closed position tracking
+            self._cleanup_closed_positions()
         summaries = []
 
         for pos in positions:
@@ -162,6 +165,8 @@ class PositionManager:
                                 f"🔻 Trailing SL updated | {pos.symbol} #{pos.ticket}"
                             )
 
+        # Clean up tracking for closed positions
+        self._cleanup_closed_positions(positions)
         return summaries
 
     def open_count(self) -> int:
@@ -199,6 +204,20 @@ class PositionManager:
     def _is_at_be(self, sl: float, entry: float, tol: float = 0.00003) -> bool:
         """Returns True if SL is already at / near breakeven."""
         return abs(sl - entry) < tol
+
+    def _cleanup_closed_positions(self, current_positions: list | None = None):
+        """Remove tracking for positions that are no longer open."""
+        if current_positions is None:
+            current_positions = []
+        
+        open_tickets = {p.ticket for p in current_positions}
+        
+        # Remove closed positions from all tracking maps
+        closed_tickets = [t for t in self._tp1_map if t not in open_tickets]
+        for ticket in closed_tickets:
+            del self._tp1_map[ticket]
+            self._highest_price.pop(ticket, None)
+            self._lowest_price.pop(ticket, None)
 
     def _get_mt5(self):
         from mt5.connector import get_connector

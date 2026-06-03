@@ -220,55 +220,61 @@ class OBTradingBot:
                 balance, signal['risk_pips'], self._sym_info
             )
 
-            log.info(
-                f"EXECUTING | {signal['type']} {self.symbol} | "
-                f"Entry≈{signal['entry']:.5f} | SL={signal['sl']:.5f} | "
-                f"TP1={signal['tp1']:.5f} | TP2={signal['tp2']:.5f} | "
-                f"Lots={lots:.2f} | Risk={signal['risk_pips']:.1f}pips"
-            )
-
-            # Save chart snapshot
-            try:
-                ob_for_chart = {
-                    'type':      signal['ob_type'],
-                    'top':       signal['ob_top'],
-                    'bottom':    signal['ob_bottom'],
-                    'bar_index': signal['ob_bar'],
-                }
-                save_signal_chart(df, ob_for_chart, signal)
-            except Exception as e:
-                log.warning(f"Chart export failed: {e}")
-
-            # Telegram alert (pre-execution)
-            notifier.alert_signal(
-                self.symbol, signal['type'],
-                signal['entry'], signal['sl'],
-                signal['tp1'], signal['tp2'],
-                signal['risk_pips']
-            )
-
-            if self.dry_run:
-                log.info("[DRY RUN] Order NOT sent to MT5.")
+            # Validate lot size before execution
+            if lots <= 0:
+                log.error(f"Invalid lot size calculated: {lots} — signal rejected")
+                signal = None
             else:
-                result = self.executor.execute_market_order(
-                    symbol    = self.symbol,
-                    direction = signal['type'],
-                    volume    = lots,
-                    sl        = signal['sl'],
-                    tp        = signal['tp2'],   # MT5 TP = our TP2
-                    comment   = f"OB_{signal['ob_type'][:4]}",
+                log.info(
+                    f"EXECUTING | {signal['type']} {self.symbol} | "
+                    f"Entry≈{signal['entry']:.5f} | SL={signal['sl']:.5f} | "
+                    f"TP1={signal['tp1']:.5f} | TP2={signal['tp2']:.5f} | "
+                    f"Lots={lots:.2f} | Risk={signal['risk_pips']:.1f}pips"
                 )
-                if result:
-                    # Register TP1 with position manager for BE move
-                    self.pos_mgr.register_trade(result['ticket'], signal['tp1'])
-                    log.info(
-                        f"Order filled | ticket=#{result['ticket']} | "
-                        f"entry={result['entry']:.5f}"
-                    )
-                    # Initialize trailing stop tracking
-                    self.pos_mgr._register_trailing_stop(result['ticket'], result['entry'], signal['type'])
+
+                # Save chart snapshot
+                try:
+                    ob_for_chart = {
+                        'type':      signal['ob_type'],
+                        'top':       signal['ob_top'],
+                        'bottom':    signal['ob_bottom'],
+                        'bar_index': signal['ob_bar'],
+                    }
+                    save_signal_chart(df, ob_for_chart, signal)
+                except Exception as e:
+                    log.warning(f"Chart export failed: {e}")
+
+                # Telegram alert (pre-execution)
+                notifier.alert_signal(
+                    self.symbol, signal['type'],
+                    signal['entry'], signal['sl'],
+                    signal['tp1'], signal['tp2'],
+                    signal['risk_pips']
+                )
+
+                if self.dry_run:
+                    log.info("[DRY RUN] Order NOT sent to MT5.")
                 else:
-                    log.error("Order execution failed — see logs above.")
+                    result = self.executor.execute_market_order(
+                        symbol    = self.symbol,
+                        direction = signal['type'],
+                        volume    = lots,
+                        sl        = signal['sl'],
+                        tp        = signal['tp2'],   # MT5 TP = our TP2
+                        comment   = f"OB_{signal['ob_type'][:4]}",
+                    )
+                    if result:
+                        # Register TP1 with position manager for BE move
+                        self.pos_mgr.register_trade(result['ticket'], signal['tp1'])
+                        log.info(
+                            f"Order filled | ticket=#{result['ticket']} | "
+                            f"entry={result['entry']:.5f}"
+                        )
+                        # Initialize trailing stop tracking
+                        self.pos_mgr._register_trailing_stop(result['ticket'], result['entry'], signal['type'])
+                    else:
+                        log.error("Order execution failed — see logs above.")
+                        notifier.alert_error("order_execution", "Market order failed")
 
         # ── 7. Status summary (every 10 cycles) ──────────────
         if cycle % 10 == 0:
@@ -276,7 +282,12 @@ class OBTradingBot:
 
     def _monitor_positions(self):
         """Called more frequently than the main cycle."""
-        summaries = self.pos_mgr.monitor(self.executor)
+        try:
+            summaries = self.pos_mgr.monitor(self.executor)
+        except Exception as e:
+            log.error(f"Position monitor exception: {e}", exc_info=True)
+            return
+        
         if summaries:
             for s in summaries:
                 log.debug(

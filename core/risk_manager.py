@@ -43,9 +43,16 @@ class RiskManager:
         # Round to broker step
         step = symbol_info.get('volume_step', 0.01)
         lots = round(raw_lots / step) * step
-        lots = max(symbol_info.get('volume_min', 0.01), lots)
-        lots = min(symbol_info.get('volume_max', 100.0), lots)
+        min_lot = symbol_info.get('volume_min', 0.01)
+        max_lot = symbol_info.get('volume_max', 100.0)
+        lots = max(min_lot, lots)
+        lots = min(max_lot, lots)
         lots = round(lots, 2)
+        
+        # Validate final lot size
+        if lots <= 0:
+            log.error(f"Lot size calculation resulted in {lots} — using minimum")
+            lots = min_lot
 
         log.info(
             f"Lot calc | Balance={balance:.2f} | Risk={risk_pct}% ({risk_amount:.2f}) | "
