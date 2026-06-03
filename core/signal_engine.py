@@ -202,6 +202,8 @@ class SignalEngine:
         return False, None
 
     def _trend_ok(self, df, i, sig_type) -> bool:
+        if not self.cf.get('use_ema_filter', True):
+            return True
         price = df['Close'].iloc[i]
         ema   = df['EMA_1H'].iloc[i]
         if sig_type == 'BUY':

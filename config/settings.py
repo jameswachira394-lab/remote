@@ -60,9 +60,10 @@ RISK = {
 # FILTERS
 # ══════════════════════════════════════════════
 FILTERS = {
-    "ema_1h_period":      600,   # 50-period × 12 bars ≈ 1H EMA on 5m data
+    "ema_1h_period":      200,   # 50-period × 12 bars ≈ 1H EMA on 5m data
     "atr_period":         14,
     "min_atr_multiplier": 0.2,   # Signal ATR must be ≥ X × mean ATR (reduced from 0.5)
+    "use_ema_filter":     False, # Disable EMA trend filter for testing
     # Trading sessions (UTC hours, inclusive) — set both to None to disable
     "session_start_utc":  None,  # Disabled for testing
     "session_end_utc":    None,  # Disabled for testing
