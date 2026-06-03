@@ -1,0 +1,9 @@
+2026-06-03 07:40:10 | INFO     | order_executor | Order sent OK | ticket=1812569251 | price=1.16183 | retcode=10009
+2026-06-03 10:40:08 | ERROR    | order_executor | Order failed | retcode=10016 | comment=Invalid stops (attempt 1)
+2026-06-03 10:40:09 | ERROR    | order_executor | Order failed | retcode=10016 | comment=Invalid stops (attempt 2)
+2026-06-03 10:40:10 | ERROR    | order_executor | Order failed | retcode=10016 | comment=Invalid stops (attempt 3)
+2026-06-03 10:40:10 | ERROR    | order_executor | All order attempts exhausted.
+2026-06-03 13:43:38 | INFO     | order_executor | Order sent OK | ticket=1813466793 | price=4434.93000 | retcode=10009
+2026-06-03 13:43:43 | WARNING  | order_executor | Modify SL failed for #1813466793: Invalid stops
+2026-06-03 13:44:06 | WARNING  | order_executor | Modify SL failed for #1813466793: Invalid stops
+2026-06-03 13:44:37 | INFO     | order_executor | SL moved → 4434.93000 for ticket #1813466793

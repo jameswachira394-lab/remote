@@ -1,0 +1,170 @@
+2026-06-02 14:35:11 | DEBUG    | signal_engine | OB@2026-06-01 15:55:00: trend filter rejected SELL
+2026-06-02 14:35:11 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 14:35:11 | DEBUG    | signal_engine | OB@2026-06-02 11:30:00: trend filter rejected SELL
+2026-06-02 14:35:41 | DEBUG    | signal_engine | OB@2026-06-01 15:55:00: trend filter rejected SELL
+2026-06-02 14:35:41 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 14:35:41 | DEBUG    | signal_engine | OB@2026-06-02 11:30:00: trend filter rejected SELL
+2026-06-02 14:36:11 | DEBUG    | signal_engine | OB@2026-06-01 15:55:00: trend filter rejected SELL
+2026-06-02 14:36:11 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 14:36:11 | DEBUG    | signal_engine | OB@2026-06-02 11:30:00: trend filter rejected SELL
+2026-06-02 14:36:41 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 14:37:11 | DEBUG    | signal_engine | OB@2026-06-01 15:55:00: trend filter rejected SELL
+2026-06-02 14:37:11 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 14:37:42 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 14:38:15 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 14:38:48 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 14:39:13 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 14:45:16 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16512 SL=1.16447 TP1=1.16577 TP2=1.16642 | Risk=6.5pips
+2026-06-02 14:45:46 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16512 SL=1.16447 TP1=1.16577 TP2=1.16642 | Risk=6.5pips
+2026-06-02 14:46:18 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16512 SL=1.16447 TP1=1.16577 TP2=1.16642 | Risk=6.5pips
+2026-06-02 14:46:50 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16512 SL=1.16447 TP1=1.16577 TP2=1.16642 | Risk=6.5pips
+2026-06-02 14:47:16 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16512 SL=1.16447 TP1=1.16577 TP2=1.16642 | Risk=6.5pips
+2026-06-02 14:47:47 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16512 SL=1.16447 TP1=1.16577 TP2=1.16642 | Risk=6.5pips
+2026-06-02 14:48:17 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16512 SL=1.16447 TP1=1.16577 TP2=1.16642 | Risk=6.5pips
+2026-06-02 14:48:47 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16512 SL=1.16447 TP1=1.16577 TP2=1.16642 | Risk=6.5pips
+2026-06-02 14:49:17 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16512 SL=1.16447 TP1=1.16577 TP2=1.16642 | Risk=6.5pips
+2026-06-02 14:49:47 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16512 SL=1.16447 TP1=1.16577 TP2=1.16642 | Risk=6.5pips
+2026-06-02 14:50:18 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 14:50:18 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 14:50:48 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 14:50:48 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 14:51:18 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 14:51:18 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 14:51:48 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 14:51:48 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 14:52:18 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 14:53:49 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:00:21 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:00:51 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:01:22 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:01:22 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 15:01:52 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:02:23 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:02:23 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 15:02:53 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:02:53 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 15:03:23 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:03:23 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 15:03:53 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:03:53 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 15:04:23 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:04:23 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 15:04:53 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:04:53 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 15:05:24 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:05:24 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 15:05:54 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:05:54 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 15:06:24 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:06:55 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:06:55 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 15:07:25 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:07:25 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 15:07:56 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:07:56 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 15:08:26 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:08:26 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 15:08:56 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:09:26 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:09:26 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 15:09:56 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 15:09:56 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 15:09:56 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 15:15:29 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16498 SL=1.16426 TP1=1.16570 TP2=1.16642 | Risk=7.2pips
+2026-06-02 15:16:00 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16498 SL=1.16426 TP1=1.16570 TP2=1.16642 | Risk=7.2pips
+2026-06-02 15:16:30 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16498 SL=1.16426 TP1=1.16570 TP2=1.16642 | Risk=7.2pips
+2026-06-02 15:17:00 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16498 SL=1.16426 TP1=1.16570 TP2=1.16642 | Risk=7.2pips
+2026-06-02 15:17:30 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16498 SL=1.16426 TP1=1.16570 TP2=1.16642 | Risk=7.2pips
+2026-06-02 15:18:00 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16498 SL=1.16426 TP1=1.16570 TP2=1.16642 | Risk=7.2pips
+2026-06-02 15:18:30 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16498 SL=1.16426 TP1=1.16570 TP2=1.16642 | Risk=7.2pips
+2026-06-02 15:19:01 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16498 SL=1.16426 TP1=1.16570 TP2=1.16642 | Risk=7.2pips
+2026-06-02 15:19:31 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16498 SL=1.16426 TP1=1.16570 TP2=1.16642 | Risk=7.2pips
+2026-06-02 15:20:02 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16536 SL=1.16426 TP1=1.16646 TP2=1.16756 | Risk=11.0pips
+2026-06-02 15:20:32 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16536 SL=1.16426 TP1=1.16646 TP2=1.16756 | Risk=11.0pips
+2026-06-02 15:21:02 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16536 SL=1.16426 TP1=1.16646 TP2=1.16756 | Risk=11.0pips
+2026-06-02 15:21:33 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16536 SL=1.16426 TP1=1.16646 TP2=1.16756 | Risk=11.0pips
+2026-06-02 15:22:03 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16536 SL=1.16426 TP1=1.16646 TP2=1.16756 | Risk=11.0pips
+2026-06-02 15:22:33 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16536 SL=1.16426 TP1=1.16646 TP2=1.16756 | Risk=11.0pips
+2026-06-02 15:23:03 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16536 SL=1.16426 TP1=1.16646 TP2=1.16756 | Risk=11.0pips
+2026-06-02 15:23:33 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16536 SL=1.16426 TP1=1.16646 TP2=1.16756 | Risk=11.0pips
+2026-06-02 15:24:03 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16536 SL=1.16426 TP1=1.16646 TP2=1.16756 | Risk=11.0pips
+2026-06-02 15:24:36 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16536 SL=1.16426 TP1=1.16646 TP2=1.16756 | Risk=11.0pips
+2026-06-02 15:35:07 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16543 SL=1.16447 TP1=1.16639 TP2=1.16735 | Risk=9.6pips
+2026-06-02 15:35:37 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16543 SL=1.16447 TP1=1.16639 TP2=1.16735 | Risk=9.6pips
+2026-06-02 15:36:08 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16543 SL=1.16447 TP1=1.16639 TP2=1.16735 | Risk=9.6pips
+2026-06-02 15:36:38 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16543 SL=1.16447 TP1=1.16639 TP2=1.16735 | Risk=9.6pips
+2026-06-02 15:37:08 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16543 SL=1.16447 TP1=1.16639 TP2=1.16735 | Risk=9.6pips
+2026-06-02 15:37:39 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16543 SL=1.16447 TP1=1.16639 TP2=1.16735 | Risk=9.6pips
+2026-06-02 15:38:09 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16543 SL=1.16447 TP1=1.16639 TP2=1.16735 | Risk=9.6pips
+2026-06-02 15:38:39 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16543 SL=1.16447 TP1=1.16639 TP2=1.16735 | Risk=9.6pips
+2026-06-02 15:39:09 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16543 SL=1.16447 TP1=1.16639 TP2=1.16735 | Risk=9.6pips
+2026-06-02 15:39:39 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16543 SL=1.16447 TP1=1.16639 TP2=1.16735 | Risk=9.6pips
+2026-06-02 13:15:15 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 13:15:15 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:15:15 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:15:15 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16494 SL=1.16447 TP1=1.16541 TP2=1.16588 | Risk=4.7pips
+2026-06-02 13:15:46 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 13:15:46 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:15:46 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:15:46 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16494 SL=1.16447 TP1=1.16541 TP2=1.16588 | Risk=4.7pips
+2026-06-02 13:16:16 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 13:16:16 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:16:16 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:16:16 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16494 SL=1.16447 TP1=1.16541 TP2=1.16588 | Risk=4.7pips
+2026-06-02 13:16:46 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:16:46 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:16:46 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16494 SL=1.16447 TP1=1.16541 TP2=1.16588 | Risk=4.7pips
+2026-06-02 13:17:17 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:17:17 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16494 SL=1.16447 TP1=1.16541 TP2=1.16588 | Risk=4.7pips
+2026-06-02 13:17:47 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:17:47 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:17:47 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16494 SL=1.16447 TP1=1.16541 TP2=1.16588 | Risk=4.7pips
+2026-06-02 13:18:17 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 13:18:17 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:18:17 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:18:17 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16494 SL=1.16447 TP1=1.16541 TP2=1.16588 | Risk=4.7pips
+2026-06-02 13:18:47 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 13:18:47 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:18:47 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:18:47 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16494 SL=1.16447 TP1=1.16541 TP2=1.16588 | Risk=4.7pips
+2026-06-02 13:19:17 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 13:19:17 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:19:17 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:19:17 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16494 SL=1.16447 TP1=1.16541 TP2=1.16588 | Risk=4.7pips
+2026-06-02 13:19:48 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 13:19:48 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:19:48 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:19:48 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16494 SL=1.16447 TP1=1.16541 TP2=1.16588 | Risk=4.7pips
+2026-06-02 13:20:18 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:20:18 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:20:48 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 13:20:48 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:20:48 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:21:18 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 13:21:18 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:21:18 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:21:48 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 13:21:48 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:21:48 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:22:18 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 13:22:18 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:22:18 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:22:49 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 13:22:49 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:22:49 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:23:19 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 13:23:19 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:23:19 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:23:50 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 13:23:50 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:23:50 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:24:21 | DEBUG    | signal_engine | OB@2026-06-01 15:40:00: trend filter rejected SELL
+2026-06-02 13:24:21 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:24:21 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:24:51 | DEBUG    | signal_engine | OB@2026-06-02 09:55:00: trend filter rejected SELL
+2026-06-02 13:24:51 | DEBUG    | signal_engine | OB@2026-06-02 09:45:00: trend filter rejected SELL
+2026-06-02 13:25:21 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16501 SL=1.16447 TP1=1.16555 TP2=1.16609 | Risk=5.4pips
+2026-06-02 13:25:51 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16501 SL=1.16447 TP1=1.16555 TP2=1.16609 | Risk=5.4pips
+2026-06-02 13:26:21 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16501 SL=1.16447 TP1=1.16555 TP2=1.16609 | Risk=5.4pips
+2026-06-02 13:26:52 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16501 SL=1.16447 TP1=1.16555 TP2=1.16609 | Risk=5.4pips
+2026-06-02 13:27:24 | INFO     | signal_engine | SIGNAL | BUY EURUSD | Entry=1.16501 SL=1.16447 TP1=1.16555 TP2=1.16609 | Risk=5.4pips

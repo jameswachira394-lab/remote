@@ -1,0 +1,9 @@
+2026-06-03 09:16:34 | INFO     | mt5.connector | MT5 disconnected.
+2026-06-03 09:24:14 | INFO     | mt5.connector | Connecting to MT5 terminal...
+2026-06-03 09:24:15 | INFO     | mt5.connector | MT5 connected | Build 5836 | Account #10401216 | James Waratho Wachira | Balance: 14.65 USD | Leverage: 1:100
+2026-06-03 09:45:06 | INFO     | mt5.connector | MT5 disconnected.
+2026-06-03 09:45:59 | INFO     | mt5.connector | Connecting to MT5 terminal...
+2026-06-03 09:46:00 | INFO     | mt5.connector | MT5 connected | Build 5836 | Account #10401216 | James Waratho Wachira | Balance: 14.65 USD | Leverage: 1:100
+2026-06-03 13:42:56 | INFO     | mt5.connector | MT5 disconnected.
+2026-06-03 13:43:35 | INFO     | mt5.connector | Connecting to MT5 terminal...
+2026-06-03 13:43:35 | INFO     | mt5.connector | MT5 connected | Build 5836 | Account #10401216 | James Waratho Wachira | Balance: 16.15 USD | Leverage: 1:100

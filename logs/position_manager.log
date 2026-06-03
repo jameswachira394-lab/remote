@@ -1,0 +1,5 @@
+2026-06-03 07:40:10 | DEBUG    | position_manager | Registered TP1=1.16105 for ticket #1812569251
+2026-06-03 13:43:38 | DEBUG    | position_manager | Registered TP1=4438.33950 for ticket #1813466793
+2026-06-03 13:43:43 | INFO     | position_manager | TP1 hit for #1813466793 | Moving SL to breakeven 4434.93000
+2026-06-03 13:44:06 | INFO     | position_manager | TP1 hit for #1813466793 | Moving SL to breakeven 4434.93000
+2026-06-03 13:44:36 | INFO     | position_manager | TP1 hit for #1813466793 | Moving SL to breakeven 4434.93000

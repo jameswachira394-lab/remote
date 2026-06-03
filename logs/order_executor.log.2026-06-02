@@ -1,0 +1,5 @@
+2026-06-02 14:45:19 | ERROR    | order_executor | Order failed | retcode=10027 | comment=AutoTrading disabled by client (attempt 1)
+2026-06-02 14:45:20 | ERROR    | order_executor | Order failed | retcode=10027 | comment=AutoTrading disabled by client (attempt 2)
+2026-06-02 14:45:21 | ERROR    | order_executor | Order failed | retcode=10027 | comment=AutoTrading disabled by client (attempt 3)
+2026-06-02 14:45:21 | ERROR    | order_executor | All order attempts exhausted.
+2026-06-02 13:15:20 | INFO     | order_executor | Order sent OK | ticket=1810922736 | price=1.16497 | retcode=10009

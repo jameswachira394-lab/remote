@@ -1,0 +1,7 @@
+2026-06-03 00:00:09 | INFO     | risk_manager | Day reset — start balance: 14.65
+2026-06-03 07:40:05 | INFO     | risk_manager | Lot calc | Balance=14.65 | Risk=1.0% (0.15) | Pips=7.2 | PipVal=10.00 | Lots=0.01
+2026-06-03 09:24:15 | INFO     | risk_manager | Day reset — start balance: 14.65
+2026-06-03 09:46:00 | INFO     | risk_manager | Day reset — start balance: 14.65
+2026-06-03 10:40:05 | INFO     | risk_manager | Lot calc | Balance=14.65 | Risk=1.0% (0.15) | Pips=904.0 | PipVal=0.01 | Lots=0.02
+2026-06-03 13:43:35 | INFO     | risk_manager | Day reset — start balance: 16.15
+2026-06-03 13:43:36 | INFO     | risk_manager | Lot calc | Balance=16.15 | Risk=1.0% (0.16) | Pips=103504.0 | PipVal=0.01 | Lots=0.01
