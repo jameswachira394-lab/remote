@@ -50,7 +50,7 @@ RISK = {
     "tp1_rr":            1.0,   # TP1 reward:risk ratio
     "tp2_rr":            2.0,   # TP2 reward:risk ratio
     "max_open_trades":   25,     # Max concurrent open positions
-    "max_daily_loss_pct":3.0,   # Halt trading if daily drawdown exceeds this %
+    "max_daily_loss_pct":50.0,   # Halt trading if daily drawdown exceeds this % (INCREASED FOR TESTING)
     "move_be_at_tp1":    True,  # Move SL to breakeven after TP1 hit
     "trailing_stop_enabled": False,  # Enable trailing stop (DISABLED - causing losses)
     "trailing_stop_pips": 15,   # Trailing stop distance in pips from current price
