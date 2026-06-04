@@ -38,7 +38,7 @@ OB = {
 # ══════════════════════════════════════════════
 SIGNAL = {
     "wick_ratio":     1.2,   # Lower wick / body ratio for hammer confirmation (reduced)
-    "engulf":         True,  # Also accept engulfing candles as confirmation
+    "engulf":         false,  # Also accept engulfing candles as confirmation
 }
 
 # ══════════════════════════════════════════════
