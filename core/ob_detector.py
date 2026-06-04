@@ -28,6 +28,11 @@ class OrderBlockDetector:
 
     def __init__(self, cfg: dict):
         self.cfg = cfg
+        self._fired_signals = set()  # track OB indices that have already fired signals
+
+    def mark_signal_fired(self, ob_index: int, ob_type: str):
+        """Call this when a signal has been executed from an OB."""
+        self._fired_signals.add((ob_index, ob_type))
 
     def detect(self, df: pd.DataFrame) -> list[dict]:
         n_imp = self.cfg.get("impulse_candles", 3)
@@ -76,6 +81,11 @@ class OrderBlockDetector:
 
         # Mark mitigated OBs (price fully traded through)
         self._mark_mitigated(df, obs)
+
+        # Mark OBs that have already fired signals as inactive
+        for ob in obs:
+            if (ob['bar_index'], ob['type']) in self._fired_signals:
+                ob['active'] = False
 
         active = [o for o in obs if o['active']]
         log.debug(

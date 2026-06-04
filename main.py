@@ -249,6 +249,8 @@ class OBTradingBot:
 
             if self.dry_run:
                 log.info("[DRY RUN] Order NOT sent to MT5.")
+                # Still mark OB as fired to prevent duplicate signals in dry run
+                self.ob_detector.mark_signal_fired(signal['ob_bar'], signal['ob_type'])
             else:
                 result = self.executor.execute_market_order(
                     symbol     = self.symbol,
@@ -260,6 +262,9 @@ class OBTradingBot:
                     comment    = f"OB_{signal['ob_type'][:4]}",
                 )
                 if result:
+                    # Mark OB as having fired a signal (prevents duplicates)
+                    self.ob_detector.mark_signal_fired(signal['ob_bar'], signal['ob_type'])
+                    
                     # Register TP1 with position manager for BE move
                     self.pos_mgr.register_trade(result['ticket'], signal['tp1'])
                     log.info(
