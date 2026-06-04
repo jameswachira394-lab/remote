@@ -52,7 +52,7 @@ RISK = {
     "max_open_trades":   5,     # Max concurrent open positions
     "max_daily_loss_pct":3.0,   # Halt trading if daily drawdown exceeds this %
     "move_be_at_tp1":    True,  # Move SL to breakeven after TP1 hit
-    "trailing_stop_enabled": True,  # Enable trailing stop
+    "trailing_stop_enabled": False,  # Enable trailing stop (DISABLED - causing losses)
     "trailing_stop_pips": 15,   # Trailing stop distance in pips from current price
 }
 
