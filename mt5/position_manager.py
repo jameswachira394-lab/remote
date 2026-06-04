@@ -43,15 +43,13 @@ class PositionManager:
 
         `direction` should be 'BUY' or 'SELL'. Stores the starting high/low
         which will be updated in `monitor()`.
+        Trailing stop is only applied AFTER some favorable price movement.
         """
         if not self.cfg_risk.get('trailing_stop_enabled', False):
             return
-        if direction.upper() == 'BUY':
-            self._highest_price[ticket] = entry
-            log.debug(f"Trailing stop initialized (BUY) for #{ticket} at {entry:.5f}")
-        else:
-            self._lowest_price[ticket] = entry
-            log.debug(f"Trailing stop initialized (SELL) for #{ticket} at {entry:.5f}")
+        # Don't start trailing immediately; wait for favorable price movement first
+        # The monitor() function will initialize these when price moves in our favor
+        log.debug(f"Trailing stop enabled for #{ticket} ({direction}); will activate on favorable price move")
 
     def monitor(self, executor) -> list[dict]:
         """
@@ -123,47 +121,61 @@ class PositionManager:
             # Update high/low seen and move SL inward if price advanced
             if self.cfg_risk.get('trailing_stop_enabled', False):
                 ts_pips = self.cfg_risk.get('trailing_stop_pips', 15)
-                # BUY: track highest price
-                if pos.ticket in self._highest_price and pos.type == 0:
-                    prev_high = self._highest_price[pos.ticket]
-                    if current_price > prev_high:
+                min_sl_distance = 5  # Minimum pips between SL and entry to avoid "Invalid stops" error
+                
+                # BUY: track highest price and move SL up
+                if pos.type == 0:
+                    # Initialize on first profit only
+                    if pos.ticket not in self._highest_price and current_price > entry:
                         self._highest_price[pos.ticket] = current_price
-                    trail_price = self._highest_price[pos.ticket] - ts_pips * self.pip
-                    # Move SL up if trail_price is higher than current SL and not already at BE
-                    if trail_price > sl and not self._is_at_be(sl, trail_price):
-                        log.info(f"Trailing SL for #{pos.ticket} -> {trail_price:.5f}")
-                        success = executor.modify_sl(pos, trail_price)
-                        if success:
-                            log_trade(
-                                action="MODIFY_TRAIL", symbol=pos.symbol,
-                                direction=summary['type'], volume=pos.volume,
-                                entry=entry, sl=trail_price, tp1=tp1, tp2=pos.tp,
-                                ticket=pos.ticket
-                            )
-                            notifier.send(
-                                f"🔻 Trailing SL updated | {pos.symbol} #{pos.ticket}"
-                            )
+                        log.debug(f"Trailing stop activated for BUY #{pos.ticket} at {current_price:.5f}")
+                    
+                    # Update highest and trail SL up
+                    if pos.ticket in self._highest_price:
+                        prev_high = self._highest_price[pos.ticket]
+                        if current_price > prev_high:
+                            self._highest_price[pos.ticket] = current_price
+                        trail_price = self._highest_price[pos.ticket] - ts_pips * self.pip
+                        # Ensure minimum distance from entry
+                        trail_price = max(trail_price, entry - min_sl_distance * self.pip)
+                        # Move SL up if trail_price is higher than current SL
+                        if trail_price > sl and not self._is_at_be(sl, trail_price):
+                            log.info(f"Trailing SL for #{pos.ticket} -> {trail_price:.5f}")
+                            success = executor.modify_sl(pos, trail_price)
+                            if success:
+                                log_trade(
+                                    action="MODIFY_TRAIL", symbol=pos.symbol,
+                                    direction=summary['type'], volume=pos.volume,
+                                    entry=entry, sl=trail_price, tp1=tp1, tp2=pos.tp,
+                                    ticket=pos.ticket
+                                )
 
-                # SELL: track lowest price
-                if pos.ticket in self._lowest_price and pos.type == 1:
-                    prev_low = self._lowest_price[pos.ticket]
-                    if current_price < prev_low:
+                # SELL: track lowest price and move SL down
+                if pos.type == 1:
+                    # Initialize on first profit only
+                    if pos.ticket not in self._lowest_price and current_price < entry:
                         self._lowest_price[pos.ticket] = current_price
-                    trail_price = self._lowest_price[pos.ticket] + ts_pips * self.pip
-                    # Move SL down (closer to current price) for SELL
-                    if trail_price < sl and not self._is_at_be(sl, trail_price):
-                        log.info(f"Trailing SL for #{pos.ticket} -> {trail_price:.5f}")
-                        success = executor.modify_sl(pos, trail_price)
-                        if success:
-                            log_trade(
-                                action="MODIFY_TRAIL", symbol=pos.symbol,
-                                direction=summary['type'], volume=pos.volume,
-                                entry=entry, sl=trail_price, tp1=tp1, tp2=pos.tp,
-                                ticket=pos.ticket
-                            )
-                            notifier.send(
-                                f"🔻 Trailing SL updated | {pos.symbol} #{pos.ticket}"
-                            )
+                        log.debug(f"Trailing stop activated for SELL #{pos.ticket} at {current_price:.5f}")
+                    
+                    # Update lowest and trail SL down
+                    if pos.ticket in self._lowest_price:
+                        prev_low = self._lowest_price[pos.ticket]
+                        if current_price < prev_low:
+                            self._lowest_price[pos.ticket] = current_price
+                        trail_price = self._lowest_price[pos.ticket] + ts_pips * self.pip
+                        # Ensure minimum distance from entry
+                        trail_price = min(trail_price, entry + min_sl_distance * self.pip)
+                        # Move SL down if trail_price is lower than current SL
+                        if trail_price < sl and not self._is_at_be(sl, trail_price):
+                            log.info(f"Trailing SL for #{pos.ticket} -> {trail_price:.5f}")
+                            success = executor.modify_sl(pos, trail_price)
+                            if success:
+                                log_trade(
+                                    action="MODIFY_TRAIL", symbol=pos.symbol,
+                                    direction=summary['type'], volume=pos.volume,
+                                    entry=entry, sl=trail_price, tp1=tp1, tp2=pos.tp,
+                                    ticket=pos.ticket
+                                )
 
         # Clean up tracking for closed positions
         self._cleanup_closed_positions(positions)
