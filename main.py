@@ -251,12 +251,13 @@ class OBTradingBot:
                 log.info("[DRY RUN] Order NOT sent to MT5.")
             else:
                 result = self.executor.execute_market_order(
-                    symbol    = self.symbol,
-                    direction = signal['type'],
-                    volume    = lots,
-                    sl        = signal['sl'],
-                    tp        = signal['tp2'],   # MT5 TP = our TP2
-                    comment   = f"OB_{signal['ob_type'][:4]}",
+                    symbol     = self.symbol,
+                    direction  = signal['type'],
+                    volume     = lots,
+                    sl         = signal['sl'],
+                    tp         = signal['tp2'],   # MT5 TP = our TP2
+                    risk_pips  = signal['risk_pips'],
+                    comment    = f"OB_{signal['ob_type'][:4]}",
                 )
                 if result:
                     # Register TP1 with position manager for BE move

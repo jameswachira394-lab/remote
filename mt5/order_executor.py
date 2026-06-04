@@ -25,6 +25,7 @@ class OrderExecutor:
         volume: float,
         sl: float,
         tp: float,        # This will be TP2 — full target
+        risk_pips: float = 0.0,
         comment: str = "",
     ) -> dict | None:
         """
@@ -66,7 +67,7 @@ class OrderExecutor:
             action="OPEN", symbol=symbol, direction=direction,
             volume=volume, entry=price, sl=sl, tp1=0, tp2=tp,
             ticket=result.order,
-            extra={"retcode": result.retcode, "comment": result.comment}
+            extra={"retcode": result.retcode, "comment": result.comment, "risk_pips": f"{risk_pips:.1f}"}
         )
         notifier.alert_fill(symbol, direction, result.order, price, volume)
         return {
