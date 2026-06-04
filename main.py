@@ -183,44 +183,41 @@ class OBTradingBot:
         obs = self.ob_detector.detect(df)
         active_obs = [o for o in obs if o['active']]
 
-        # ── 4. Evaluate signal ────────────────────────────────
-        signal = self.sig_engine.evaluate(df, active_obs, self.symbol)
+        # ── 4. Evaluate signals ───────────────────────────────
+        signals = self.sig_engine.evaluate(df, active_obs, self.symbol)
 
-        if signal:
+        # ── 5. Process each signal through risk gates & execute ─
+        for signal in signals:
             # De-duplicate: skip if same bar fired last cycle
             if signal['bar_index'] == self._last_signal_bar:
                 log.debug("Signal already processed for this bar — skipping.")
-                signal = None
-            else:
-                # Mark OB as fired immediately (before gates) to prevent duplicate signals
-                # This ensures we don't re-fire the same OB even if gates block execution
-                self.ob_detector.mark_signal_fired(signal['ob_bar'], signal['ob_type'])
+                continue
 
-        # ── 5. Risk gates ─────────────────────────────────────
-        if signal:
+            # Mark OB as fired immediately (before gates) to prevent duplicate signals
+            # This ensures we don't re-fire the same OB even if gates block execution
+            self.ob_detector.mark_signal_fired(signal['ob_bar'], signal['ob_type'])
+
+            # ── Risk gate: daily loss limit ────────────────────
             acct = self.connector.account_info()
             balance = acct.get('balance', 0.0)
 
-            # Gate 1: daily loss limit
             if not self.risk_mgr.check_daily_loss(balance):
-                log.warning("Daily loss limit — signal blocked.")
-                signal = None
+                log.warning(f"Daily loss limit — signal {signal['type']} blocked.")
+                continue
 
-            # Gate 2: max concurrent trades
-            if signal and self.pos_mgr.open_count() >= RISK.get('max_open_trades', 2):
-                log.info(
-                    f"Max open trades ({RISK['max_open_trades']}) reached — signal blocked."
+            # ── Risk gate: max concurrent trades ───────────────
+            if self.pos_mgr.open_count() >= RISK.get('max_open_trades', 2):
+                log.warning(
+                    f"Max open trades ({RISK['max_open_trades']}) reached — "
+                    f"{signal['type']} {signal['symbol']} blocked."
                 )
-                signal = None
+                continue
 
-        # ── 6. Execute ────────────────────────────────────────
-        if signal:
+            # ── Execute the signal ────────────────────────────
             self._last_signal_bar = signal['bar_index']
 
             # Lot size
-            acct    = self.connector.account_info()
-            balance = acct.get('balance', 0.0)
-            lots    = self.risk_mgr.calc_lot_size(
+            lots = self.risk_mgr.calc_lot_size(
                 balance, signal['risk_pips'], self._sym_info
             )
 

@@ -35,17 +35,20 @@ class SignalEngine:
     # ── public ────────────────────────────────
 
     def evaluate(self, df: pd.DataFrame, obs: list[dict],
-                 symbol: str = "EURUSD") -> dict | None:
+                 symbol: str = "EURUSD") -> list[dict]:
         """
         Called once per main loop cycle with the latest bar data.
-        Returns the first valid signal found, or None.
+        Returns ALL valid signals found (may be multiple from different OBs).
+        Returns empty list if none found.
         """
+        signals = []
+        
         if len(df) < 10:
-            return None
+            return signals
 
         # Filters that apply to the entire cycle
         if not self._session_ok(df):
-            return None
+            return signals
 
         # Use the LAST COMPLETED bar (index -2 to avoid partial bar)
         i = len(df) - 2
@@ -61,9 +64,9 @@ class SignalEngine:
 
             sig = self._check_ob(df, ob, i, symbol)
             if sig:
-                return sig   # return first valid signal this cycle
+                signals.append(sig)
 
-        return None
+        return signals
 
     # ── private ───────────────────────────────
 
