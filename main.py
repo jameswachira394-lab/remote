@@ -191,6 +191,10 @@ class OBTradingBot:
             if signal['bar_index'] == self._last_signal_bar:
                 log.debug("Signal already processed for this bar — skipping.")
                 signal = None
+            else:
+                # Mark OB as fired immediately (before gates) to prevent duplicate signals
+                # This ensures we don't re-fire the same OB even if gates block execution
+                self.ob_detector.mark_signal_fired(signal['ob_bar'], signal['ob_type'])
 
         # ── 5. Risk gates ─────────────────────────────────────
         if signal:
@@ -249,8 +253,6 @@ class OBTradingBot:
 
             if self.dry_run:
                 log.info("[DRY RUN] Order NOT sent to MT5.")
-                # Still mark OB as fired to prevent duplicate signals in dry run
-                self.ob_detector.mark_signal_fired(signal['ob_bar'], signal['ob_type'])
             else:
                 result = self.executor.execute_market_order(
                     symbol     = self.symbol,
@@ -262,9 +264,6 @@ class OBTradingBot:
                     comment    = f"OB_{signal['ob_type'][:4]}",
                 )
                 if result:
-                    # Mark OB as having fired a signal (prevents duplicates)
-                    self.ob_detector.mark_signal_fired(signal['ob_bar'], signal['ob_type'])
-                    
                     # Register TP1 with position manager for BE move
                     self.pos_mgr.register_trade(result['ticket'], signal['tp1'])
                     log.info(
