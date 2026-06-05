@@ -184,7 +184,9 @@ class OBTradingBot:
         active_obs = [o for o in obs if o['active']]
 
         # ── 4. Evaluate signals ───────────────────────────────
-        signals = self.sig_engine.evaluate(df, active_obs, self.symbol)
+        # Pass the set of already-fired signals to prevent duplicates across cycles
+        signals = self.sig_engine.evaluate(df, active_obs, self.symbol, 
+                                           fired_signals=self.ob_detector._fired_signals)
 
         # ── 5. Process each signal through risk gates & execute ─
         for signal in signals:

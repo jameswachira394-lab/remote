@@ -35,11 +35,13 @@ class SignalEngine:
     # ── public ────────────────────────────────
 
     def evaluate(self, df: pd.DataFrame, obs: list[dict],
-                 symbol: str = "EURUSD") -> list[dict]:
+                 symbol: str = "EURUSD", fired_signals: set | None = None) -> list[dict]:
         """
         Called once per main loop cycle with the latest bar data.
         Returns ALL valid signals found (may be multiple from different OBs).
         Returns empty list if none found.
+        
+        fired_signals: set of (ob_index, ob_type) tuples that already generated signals
         """
         signals = []
         
@@ -60,6 +62,11 @@ class SignalEngine:
             # Must be retesting AFTER impulse finished
             min_bar = ob['formation_bar'] + self.cf.get('min_retest_gap', 5)
             if i < min_bar:
+                continue
+            
+            # Skip if this OB already fired a signal in a previous cycle
+            if fired_signals and (ob['bar_index'], ob['type']) in fired_signals:
+                log.debug(f"OB@{ob['bar_index']} ({ob['type']}): already fired signal — skipping")
                 continue
 
             sig = self._check_ob(df, ob, i, symbol)

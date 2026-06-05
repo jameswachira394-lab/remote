@@ -79,7 +79,7 @@ EXEC = {
     "slippage":       3,        # Max slippage in points
     "retry_attempts": 3,        # Retry failed orders N times
     "retry_delay_s":  1.0,      # Seconds between retries
-    "pip_size":       0.0001,   # EUR/USD; use 0.01 for JPY pairs
+    "pip_size":       0.01,     # XAUUSD uses 0.01 (0.0001 for EUR/USD, JPY pairs)
 }
 
 # ══════════════════════════════════════════════
