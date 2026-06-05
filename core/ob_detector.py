@@ -28,15 +28,15 @@ class OrderBlockDetector:
 
     def __init__(self, cfg: dict):
         self.cfg = cfg
-        self._fired_signals = set()  # track OB indices that have already fired signals
+        self._fired_signals = set()  # track OB timestamps that have already fired signals
 
-    def mark_signal_fired(self, ob_index: int, ob_type: str):
+    def mark_signal_fired(self, ob_timestamp, ob_type: str):
         """Call this when a signal has been GENERATED (not just executed) from an OB."""
-        self._fired_signals.add((ob_index, ob_type))
+        self._fired_signals.add((ob_timestamp, ob_type))
     
-    def is_signal_already_fired(self, ob_index: int, ob_type: str) -> bool:
+    def is_signal_already_fired(self, ob_timestamp, ob_type: str) -> bool:
         """Check if this OB has already generated a signal in a previous cycle."""
-        return (ob_index, ob_type) in self._fired_signals
+        return (ob_timestamp, ob_type) in self._fired_signals
 
     def detect(self, df: pd.DataFrame) -> list[dict]:
         n_imp = self.cfg.get("impulse_candles", 3)
@@ -88,7 +88,7 @@ class OrderBlockDetector:
 
         # Mark OBs that have already fired signals as inactive
         for ob in obs:
-            if (ob['bar_index'], ob['type']) in self._fired_signals:
+            if (ob['timestamp'], ob['type']) in self._fired_signals:
                 ob['active'] = False
 
         active = [o for o in obs if o['active']]

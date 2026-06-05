@@ -65,8 +65,8 @@ class SignalEngine:
                 continue
             
             # Skip if this OB already fired a signal in a previous cycle
-            if fired_signals and (ob['bar_index'], ob['type']) in fired_signals:
-                log.debug(f"OB@{ob['bar_index']} ({ob['type']}): already fired signal — skipping")
+            if fired_signals and (ob['timestamp'], ob['type']) in fired_signals:
+                log.debug(f"OB@{ob['timestamp']} ({ob['type']}): already fired signal — skipping")
                 continue
 
             sig = self._check_ob(df, ob, i, symbol)
@@ -175,6 +175,7 @@ class SignalEngine:
             'ob_top':    ob['top'],
             'ob_bottom': ob['bottom'],
             'ob_bar':    ob['bar_index'],
+            'ob_timestamp': ob['timestamp'],
         }
 
         log.info(

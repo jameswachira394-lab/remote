@@ -81,7 +81,7 @@ class OBTradingBot:
         self.pos_mgr     = PositionManager(EXEC, RISK, self.pip_size)
 
         # State
-        self._last_signal_bar: int | None = None   # avoid duplicate signals
+        self._last_signal_time: pd.Timestamp | None = None   # avoid duplicate signals
         self._current_day: date | None    = None
 
     # ── public ────────────────────────────────
@@ -191,13 +191,13 @@ class OBTradingBot:
         # ── 5. Process each signal through risk gates & execute ─
         for signal in signals:
             # De-duplicate: skip if same bar fired last cycle
-            if signal['bar_index'] == self._last_signal_bar:
+            if signal['timestamp'] == self._last_signal_time:
                 log.debug("Signal already processed for this bar — skipping.")
                 continue
 
             # Mark OB as fired immediately (before gates) to prevent duplicate signals
             # This ensures we don't re-fire the same OB even if gates block execution
-            self.ob_detector.mark_signal_fired(signal['ob_bar'], signal['ob_type'])
+            self.ob_detector.mark_signal_fired(signal['ob_timestamp'], signal['ob_type'])
 
             # ── Risk gate: daily loss limit ────────────────────
             acct = self.connector.account_info()
@@ -216,7 +216,7 @@ class OBTradingBot:
                 continue
 
             # ── Execute the signal ────────────────────────────
-            self._last_signal_bar = signal['bar_index']
+            self._last_signal_time = signal['timestamp']
 
             # Lot size
             lots = self.risk_mgr.calc_lot_size(
@@ -269,8 +269,9 @@ class OBTradingBot:
                         f"Order filled | ticket=#{result['ticket']} | "
                         f"entry={result['entry']:.5f}"
                     )
-                    # Initialize trailing stop tracking
-                    self.pos_mgr._register_trailing_stop(result['ticket'], result['entry'], signal['type'])
+                    # Initialize trailing stop tracking (only if enabled)
+                    if RISK.get('trailing_stop_enabled', False):
+                        self.pos_mgr._register_trailing_stop(result['ticket'], result['entry'], signal['type'])
                 else:
                     log.error("Order execution failed — see logs above.")
                     notifier.alert_error("order_execution", "Market order failed")
