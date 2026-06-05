@@ -37,7 +37,7 @@ OB = {
 # SIGNAL / ENTRY
 # ══════════════════════════════════════════════
 SIGNAL = {
-    "wick_ratio":     1.2,   # Lower wick / body ratio for hammer confirmation (reduced)
+    "wick_ratio":     1.5,   # Lower wick / body ratio for hammer confirmation (stricter)
     "engulf":         True,  # Also accept engulfing candles as confirmation
 }
 
@@ -45,12 +45,12 @@ SIGNAL = {
 # RISK MANAGEMENT
 # ══════════════════════════════════════════════
 RISK = {
-    "risk_pct":          1.0,   # % of account balance to risk per trade
+    "risk_pct":          0.5,   # % of account balance to risk per trade (REDUCED FOR SAFETY)
     "sl_buffer_pips":    3,     # Extra pips beyond OB boundary for SL
     "tp1_rr":            1.0,   # TP1 reward:risk ratio
     "tp2_rr":            2.0,   # TP2 reward:risk ratio
-    "max_open_trades":   25,     # Max concurrent open positions
-    "max_daily_loss_pct":100.0,   # Halt trading if daily drawdown exceeds this % (INCREASED FOR TESTING)
+    "max_open_trades":   2,     # Max concurrent open positions (REDUCED FROM 25)
+    "max_daily_loss_pct": 100.0,  # Halt trading if daily drawdown exceeds this % (DISABLED FOR TESTING)
     "move_be_at_tp1":    True,  # Move SL to breakeven after TP1 hit
     "trailing_stop_enabled": False,  # Enable trailing stop (DISABLED - causing losses)
     "trailing_stop_pips": 15,   # Trailing stop distance in pips from current price
@@ -62,11 +62,11 @@ RISK = {
 FILTERS = {
     "ema_1h_period":      200,   # 50-period × 12 bars ≈ 1H EMA on 5m data
     "atr_period":         14,
-    "min_atr_multiplier": 0.2,   # Signal ATR must be ≥ X × mean ATR (reduced from 0.5)
-    "use_ema_filter":     False, # Disable EMA trend filter for testing
+    "min_atr_multiplier": 0.5,   # Signal ATR must be ≥ X × mean ATR (restored for stability)
+    "use_ema_filter":     True,  # Enable EMA trend filter to reduce false signals
     # Trading sessions (UTC hours, inclusive) — set both to None to disable
-    "session_start_utc":  None,  # Disabled for testing
-    "session_end_utc":    None,  # Disabled for testing
+    "session_start_utc":  8,     # 8am UTC
+    "session_end_utc":    20,    # 8pm UTC (London-NY overlap)
     "skip_news":          False, # Set True to enable news filter (requires API key)
 }
 

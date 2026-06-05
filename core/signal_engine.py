@@ -95,6 +95,10 @@ class SignalEngine:
                 ob['mitigated'] = True
             return None
 
+        # Early exit: prevent duplicate signals on same bar
+        if ob.get('_signal_fired_bar') == i:
+            return None
+
         # 2. Confirmation candle
         confirmed, sig_type = self._confirmation(df, i, ob['type'])
         if not confirmed:
@@ -134,6 +138,9 @@ class SignalEngine:
         if risk <= 0:
             return None
 
+        # Calculate risk in pips correctly
+        risk_pips = round(risk / self.pip, 1)
+        
         # Validate TP levels
         if sig_type == 'BUY':
             if tp1 >= tp2:
@@ -145,6 +152,7 @@ class SignalEngine:
                 return None
 
         ob['active'] = False  # prevent duplicate signals on the same OB
+        ob['_signal_fired_bar'] = i  # Track which bar fired the signal
 
         signal = {
             'symbol':    symbol,
@@ -155,7 +163,7 @@ class SignalEngine:
             'sl':        round(sl, 5),
             'tp1':       round(tp1, 5),
             'tp2':       round(tp2, 5),
-            'risk_pips': round(risk / self.pip, 1),
+            'risk_pips': risk_pips,
             'ob_type':   ob['type'],
             'ob_top':    ob['top'],
             'ob_bottom': ob['bottom'],
@@ -165,7 +173,7 @@ class SignalEngine:
         log.info(
             f"SIGNAL | {sig_type} {symbol} | "
             f"Entry={entry:.5f} SL={sl:.5f} TP1={tp1:.5f} TP2={tp2:.5f} | "
-            f"Risk={risk/self.pip:.1f}pips"
+            f"Risk={risk_pips:.1f}pips"
         )
         return signal
 
