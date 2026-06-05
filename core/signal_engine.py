@@ -106,13 +106,18 @@ class SignalEngine:
         if ob.get('_signal_fired_bar') == i:
             return None
 
-        # 2. Confirmation candle
-        confirmed, sig_type = self._confirmation(df, i, ob['type'])
-        if not confirmed:
-            log.debug(f"OB@{ob['formation_bar']}: confirmation candle rejected (no hammer/engulf)")
-            return None
+        # 2. Confirmation candle (optional — disabled when require_confirmation=False)
+        if self.cs.get('require_confirmation', True):
+            confirmed, sig_type = self._confirmation(df, i, ob['type'])
+            if not confirmed:
+                log.debug(f"OB@{ob['formation_bar']}: confirmation candle rejected (no hammer/engulf)")
+                return None
+        else:
+            # No confirmation required — infer direction from OB type
+            sig_type = 'BUY' if ob['type'] == 'Bullish' else 'SELL'
+            log.debug(f"OB@{ob['formation_bar']}: confirmation skipped — entering {sig_type} on zone touch")
 
-        # 3. Trend filter
+        # 3. Trend filter (optional — disabled when use_ema_filter=False)
         if not self._trend_ok(df, i, sig_type):
             price = df['Close'].iloc[i]
             ema = df['EMA_1H'].iloc[i]

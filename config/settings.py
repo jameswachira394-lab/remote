@@ -39,6 +39,7 @@ OB = {
 SIGNAL = {
     "wick_ratio":     1.5,   # Lower wick / body ratio for hammer confirmation (stricter)
     "engulf":         True,  # Also accept engulfing candles as confirmation
+    "require_confirmation": False, # Disable Hammer and Engulfing pattern requirements
 }
 
 # ══════════════════════════════════════════════
@@ -63,7 +64,7 @@ FILTERS = {
     "ema_1h_period":      200,   # 50-period × 12 bars ≈ 1H EMA on 5m data
     "atr_period":         14,
     "min_atr_multiplier": 0.5,   # Signal ATR must be ≥ X × mean ATR (restored for stability)
-    "use_ema_filter":     True,  # Enable EMA trend filter to reduce false signals
+    "use_ema_filter":     False,  # Disable EMA trend filter to trade more frequently
     # Trading sessions (UTC hours, inclusive) — set both to None to disable
     "session_start_utc":  8,     # 8am UTC
     "session_end_utc":    20,    # 8pm UTC (London-NY overlap)
