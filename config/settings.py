@@ -49,7 +49,7 @@ RISK = {
     "sl_buffer_pips":    3,     # Extra pips beyond OB boundary for SL
     "tp1_rr":            1.0,   # TP1 reward:risk ratio
     "tp2_rr":            2.0,   # TP2 reward:risk ratio
-    "max_open_trades":   2,     # Max concurrent open positions (REDUCED FROM 25)
+    "max_open_trades":   50,    # Max concurrent open positions (HIGH - trade all active OBs)
     "max_daily_loss_pct": 100.0,  # Halt trading if daily drawdown exceeds this % (DISABLED FOR TESTING)
     "move_be_at_tp1":    True,  # Move SL to breakeven after TP1 hit
     "trailing_stop_enabled": False,  # Enable trailing stop (DISABLED - causing losses)
@@ -86,8 +86,8 @@ EXEC = {
 # LOOP TIMING
 # ══════════════════════════════════════════════
 LOOP = {
-    "cycle_seconds":    30,   # Main loop interval (check for signals every N sec)
-    "position_check_s": 10,   # How often to check open positions for BE move
+    "cycle_seconds":    10,   # Main loop interval - check for signals every 10s (faster execution)
+    "position_check_s": 5,    # How often to check open positions for BE move (faster monitoring)
 }
 
 # ══════════════════════════════════════════════
