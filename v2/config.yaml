@@ -9,7 +9,7 @@ system:
   name: "OB_Trading_v2"
   version: "2.0.0"
   timezone: "UTC"               # All timestamps stored in UTC
-  dry_run: true                 # true = no real orders sent
+  dry_run: false                # false = LIVE orders sent to MT5
   log_level: "INFO"             # DEBUG | INFO | WARNING | ERROR
 
 # ── DATA SOURCE ─────────────────────────────────────────────────
@@ -84,20 +84,20 @@ structure:
 
 # ── HTF BIAS ENGINE ─────────────────────────────────────────────
 bias:
-  hh_hl_count: 2                # Consecutive HH+HL to confirm BULLISH
-  lh_ll_count: 2                # Consecutive LH+LL to confirm BEARISH
+  hh_hl_count: 1                # Consecutive HH+HL to confirm BULLISH
+  lh_ll_count: 1                # Consecutive LH+LL to confirm BEARISH
   update_interval_h: 1          # Recalculate every N hours
 
 # ── SIGNAL FILTERS ──────────────────────────────────────────────
 signal:
-  min_rr: 2.0                   # Minimum RR to generate a signal
+  min_rr: 1.5                   # Minimum RR to generate a signal (lowered for more signals)
   sl_buffer_pips: 2             # Extra pips beyond OB extreme for SL
-  tp_target: "next_swing"       # "next_swing" | "fixed_rr"
-  fixed_rr: 3.0                 # Used if tp_target = fixed_rr
+  tp_target: "fixed_rr"         # "fixed_rr" is more reliable than next_swing
+  fixed_rr: 2.0                 # TP2 = 2:1 reward-to-risk
 
-  # Confirmation inside OB (at least one must be true)
-  require_confirmation: true
-  wick_ratio: 0.60              # Wick must be >= 60% of candle range
+  # Confirmation inside OB — require ANY one to be true
+  require_confirmation: false   # Disabled: fire on zone touch alone
+  wick_ratio: 0.50              # Wick must be >= 50% of candle range
   engulf: true                  # Accept engulfing candle
   internal_bos: true            # Accept internal 5M BOS inside OB
 
@@ -117,8 +117,8 @@ risk:
   tp1_rr: 1.0                   # TP1 level (move BE here)
   tp2_rr: 2.0                   # TP2 level (full TP)
   move_be_at_tp1: true
-  max_open_trades: 3
-  max_daily_loss_pct: 3.0       # Halt if daily drawdown exceeds this
+  max_open_trades: 5
+  max_daily_loss_pct: 5.0       # Halt if daily drawdown exceeds this
   trailing_stop_enabled: true
   trailing_stop_pips: 15
 
