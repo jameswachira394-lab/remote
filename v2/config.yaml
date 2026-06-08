@@ -101,7 +101,7 @@ signal:
   engulf: true                  # Accept engulfing candle
   internal_bos: true            # Accept internal 5M BOS inside OB
 
-  # Session filter (UTC hours, inclusive)
+  # Session filter — disabled: bot trades 24/5
   sessions:
     london:
       start: 8
@@ -109,8 +109,7 @@ signal:
     new_york:
       start: 13
       end: 17
-    # Set enabled: false to disable session filter entirely
-    enabled: true
+    enabled: false
 
 # ── RISK MANAGEMENT ─────────────────────────────────────────────
 risk:
