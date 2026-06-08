@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>OB Trading Assistant — XAUUSD M5 System</title>
+<meta name="description" content="5-minute Order Block Trading Assistant for the Institutional OB MT5 System. Trade checklist, RR calculator, session timer, journal, and OB validity checker."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  /* ═══════════════════════════════════════════
+     DESIGN TOKENS
+  ═══════════════════════════════════════════ */
+  :root{
+    --bg:#0a0c0f;
+    --bg2:#0f1217;
+    --bg3:#151a22;
+    --bg4:#1c2330;
+    --border:#252d3a;
+    --border-glow:#2e3d55;
+    --text:#e2e8f0;
+    --text-muted:#6b7a90;
+    --text-dim:#3d4a5c;
+    --green:#00d084;
+    --green-dim:#003d25;
+    --green-mid:#00a066;
+    --red:#ff4560;
+    --red-dim:#3d0010;
+    --red-mid:#cc1f3d;
+    --yellow:#f59e0b;
+    --yellow-dim:#3d2700;
+    --blue:#3b82f6;
+    --blue-dim:#0d1f3d;
+    --accent:#7c3aed;
+    --accent-dim:#1a0d3d;
+    --gold:#fbbf24;
+    --radius:10px;
+    --radius-lg:14px;
+    --font:'Inter',sans-serif;
+    --mono:'JetBrains Mono',monospace;
+    --shadow:0 4px 24px rgba(0,0,0,.5);
+    --glow-green:0 0 20px rgba(0,208,132,.15);
+    --glow-red:0 0 20px rgba(255,69,96,.15);
+  }
+
+  /* ═══════════════════════════════════════════
+     RESET & BASE
+  ═══════════════════════════════════════════ */
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  button{cursor:pointer;font-family:var(--font);}
+  input,select,textarea{font-family:var(--font);}
+  ::-webkit-scrollbar{width:5px;height:5px;}
+  ::-webkit-scrollbar-track{background:var(--bg2);}
+  ::-webkit-scrollbar-thumb{background:var(--border-glow);border-radius:4px;}
+
+  /* ═══════════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════════ */
+  .app{display:flex;min-height:100vh;}
+
+  /* SIDEBAR */
+  .sidebar{
+    width:220px;
+    min-width:220px;
+    background:var(--bg2);
+    border-right:1px solid var(--border);
+    display:flex;
+    flex-direction:column;
+    position:sticky;
+    top:0;
+    height:100vh;
+    z-index:50;
+  }
+  .logo{
+    padding:24px 20px 18px;
+    border-bottom:1px solid var(--border);
+  }
+  .logo-symbol{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:2px;
+    color:var(--gold);
+    text-transform:uppercase;
+    font-family:var(--mono);
+  }
+  .logo-title{
+    font-size:17px;
+    font-weight:800;
+    color:var(--text);
+    line-height:1.2;
+    margin-top:4px;
+  }
+  .logo-sub{
+    font-size:10px;
+    color:var(--text-muted);
+    margin-top:2px;
+    font-family:var(--mono);
+  }
+  .nav{flex:1;padding:12px 0;}
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:11px 20px;
+    cursor:pointer;
+    border-left:3px solid transparent;
+    transition:all .2s;
+    font-size:13px;
+    font-weight:500;
+    color:var(--text-muted);
+    user-select:none;
+  }
+  .nav-item:hover{
+    background:var(--bg3);
+    color:var(--text);
+    border-left-color:var(--border-glow);
+  }
+  .nav-item.active{
+    background:var(--bg3);
+    color:var(--green);
+    border-left-color:var(--green);
+  }
+  .nav-icon{font-size:16px;width:20px;text-align:center;}
+  .sidebar-footer{
+    padding:14px 20px;
+    border-top:1px solid var(--border);
+    font-size:10px;
+    color:var(--text-dim);
+    font-family:var(--mono);
+  }
+
+  /* MAIN */
+  .main{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
+  .topbar{
+    padding:14px 28px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:var(--bg2);
+    position:sticky;
+    top:0;
+    z-index:40;
+  }
+  .topbar-title{font-size:15px;font-weight:700;color:var(--text);}
+  .topbar-right{display:flex;align-items:center;gap:14px;}
+  .live-badge{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:var(--green-dim);
+    border:1px solid var(--green-mid);
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:600;
+    color:var(--green);
+    font-family:var(--mono);
+  }
+  .live-dot{
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--green);
+    animation:pulse 1.5s infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.8);}}
+
+  .content{padding:28px;flex:1;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  /* ═══════════════════════════════════════════
+     CARDS / PANELS
+  ═══════════════════════════════════════════ */
+  .card{
+    background:var(--bg3);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:22px;
+    margin-bottom:20px;
+  }
+  .card-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .card-title{
+    font-size:13px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--text-muted);
+  }
+  .card-badge{
+    font-size:11px;
+    padding:3px 8px;
+    border-radius:6px;
+    font-family:var(--mono);
+    font-weight:600;
+  }
+  .badge-green{background:var(--green-dim);color:var(--green);border:1px solid var(--green-mid);}
+  .badge-red{background:var(--red-dim);color:var(--red);border:1px solid var(--red-mid);}
+  .badge-yellow{background:var(--yellow-dim);color:var(--yellow);border:1px solid #7a4f00;}
+  .badge-blue{background:var(--blue-dim);color:var(--blue);border:1px solid #1e3a5f;}
+  .badge-accent{background:var(--accent-dim);color:#a78bfa;border:1px solid #3d1f7a;}
+
+  /* ═══════════════════════════════════════════
+     GRID
+  ═══════════════════════════════════════════ */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+
+  /* ═══════════════════════════════════════════
+     TAB 1 — TRADE CHECKLIST
+  ═══════════════════════════════════════════ */
+  .checklist-item{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    padding:14px 16px;
+    border-radius:var(--radius);
+    border:1px solid var(--border);
+    margin-bottom:10px;
+    cursor:pointer;
+    transition:all .2s;
+    background:var(--bg4);
+  }
+  .checklist-item:hover{border-color:var(--border-glow);background:var(--bg3);}
+  .checklist-item.checked{
+    border-color:var(--green-mid);
+    background:rgba(0,208,132,.06);
+  }
+  .cb-wrap{
+    width:22px;height:22px;
+    border-radius:6px;
+    border:2px solid var(--border-glow);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    transition:all .2s;
+    margin-top:1px;
+  }
+  .checklist-item.checked .cb-wrap{
+    background:var(--green);
+    border-color:var(--green);
+  }
+  .cb-check{color:#000;font-size:13px;font-weight:900;display:none;}
+  .checklist-item.checked .cb-check{display:block;}
+  .cb-label{flex:1;}
+  .cb-main{font-size:13.5px;font-weight:500;color:var(--text);line-height:1.4;}
+  .cb-sub{font-size:11px;color:var(--text-muted);margin-top:3px;font-family:var(--mono);}
+
+  /* Bias selector inside checklist */
+  .bias-row{
+    display:flex;
+    gap:8px;
+    margin-top:8px;
+  }
+  .bias-btn{
+    padding:5px 14px;
+    border-radius:6px;
+    border:1px solid var(--border-glow);
+    background:transparent;
+    font-size:12px;
+    font-weight:600;
+    color:var(--text-muted);
+    transition:all .2s;
+  }
+  .bias-btn:hover{border-color:var(--text-muted);}
+  .bias-btn.bull.active{background:var(--green-dim);border-color:var(--green);color:var(--green);}
+  .bias-btn.bear.active{background:var(--red-dim);border-color:var(--red);color:var(--red);}
+
+  .take-trade-btn{
+    width:100%;
+    padding:16px;
+    border-radius:var(--radius-lg);
+    border:none;
+    font-size:15px;
+    font-weight:800;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    transition:all .3s;
+    margin-top:6px;
+    cursor:not-allowed;
+    background:var(--bg4);
+    color:var(--text-dim);
+    border:1px solid var(--border);
+  }
+  .take-trade-btn.ready{
+    background:linear-gradient(135deg,var(--green-mid),var(--green));
+    color:#000;
+    cursor:pointer;
+    box-shadow:0 4px 30px rgba(0,208,132,.35);
+    animation:glow-btn 2s infinite;
+  }
+  @keyframes glow-btn{
+    0%,100%{box-shadow:0 4px 30px rgba(0,208,132,.35);}
+    50%{box-shadow:0 4px 50px rgba(0,208,132,.6);}
+  }
+  .take-trade-btn.ready:hover{transform:translateY(-2px);}
+
+  .progress-bar-wrap{
+    background:var(--bg4);
+    border-radius:4px;
+    height:5px;
+    margin-bottom:18px;
+    overflow:hidden;
+  }
+  .progress-bar{
+    height:100%;
+    border-radius:4px;
+    background:var(--green);
+    transition:width .4s cubic-bezier(.4,0,.2,1);
+  }
+  .progress-text{
+    font-size:11px;
+    color:var(--text-muted);
+    font-family:var(--mono);
+    margin-bottom:8px;
+    display:flex;
+    justify-content:space-between;
+  }
+
+  /* ═══════════════════════════════════════════
+     TAB 2 — RR CALCULATOR
+  ═══════════════════════════════════════════ */
+  .input-group{margin-bottom:16px;}
+  .input-label{
+    font-size:11px;
+    font-weight:600;
+    color:var(--text-muted);
+    text-transform:uppercase;
+    letter-spacing:.8px;
+    margin-bottom:6px;
+    display:block;
+  }
+  .input-field{
+    width:100%;
+    background:var(--bg4);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:11px 14px;
+    color:var(--text);
+    font-size:14px;
+    font-family:var(--mono);
+    outline:none;
+    transition:border-color .2s;
+  }
+  .input-field:focus{border-color:var(--blue);}
+  .input-field:focus{box-shadow:0 0 0 3px rgba(59,130,246,.1);}
+  select.input-field option{background:var(--bg3);}
+
+  .calc-result{
+    background:var(--bg4);
+    border-radius:var(--radius);
+    padding:18px;
+    border:1px solid var(--border);
+  }
+  .calc-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:9px 0;
+    border-bottom:1px solid var(--border);
+    font-size:13px;
+  }
+  .calc-row:last-child{border-bottom:none;}
+  .calc-row label{color:var(--text-muted);font-size:12px;}
+  .calc-row .val{
+    font-family:var(--mono);
+    font-weight:600;
+    font-size:14px;
+    color:var(--text);
+  }
+  .val.good{color:var(--green);}
+  .val.bad{color:var(--red);}
+  .val.warn{color:var(--yellow);}
+
+  .rr-display{
+    text-align:center;
+    padding:22px;
+    border-radius:var(--radius-lg);
+    border:2px solid var(--border);
+    margin-bottom:18px;
+    transition:all .3s;
+  }
+  .rr-display.good{border-color:var(--green-mid);background:var(--green-dim);}
+  .rr-display.bad{border-color:var(--red-mid);background:var(--red-dim);}
+  .rr-value{
+    font-size:44px;
+    font-weight:800;
+    font-family:var(--mono);
+    line-height:1;
+  }
+  .rr-label{font-size:12px;color:var(--text-muted);margin-top:6px;text-transform:uppercase;letter-spacing:1px;}
+  .rr-flag{font-size:12px;margin-top:6px;font-weight:600;}
+
+  /* ═══════════════════════════════════════════
+     TAB 3 — SESSION TIMER
+  ═══════════════════════════════════════════ */
+  .clock-block{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:30px;
+    border-radius:var(--radius-lg);
+    border:1px solid var(--border);
+    background:var(--bg4);
+    text-align:center;
+  }
+  .clock-zone{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
+  .clock-time{
+    font-size:42px;
+    font-weight:800;
+    font-family:var(--mono);
+    color:var(--text);
+    letter-spacing:2px;
+    line-height:1;
+  }
+  .clock-date{font-size:12px;color:var(--text-muted);margin-top:6px;font-family:var(--mono);}
+
+  .session-status{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding:16px;
+    border-radius:var(--radius-lg);
+    border:2px solid var(--border);
+    font-size:16px;
+    font-weight:700;
+    transition:all .3s;
+    margin-bottom:20px;
+  }
+  .session-status.active{border-color:var(--green-mid);background:var(--green-dim);color:var(--green);}
+  .session-status.avoid{border-color:var(--red-mid);background:var(--red-dim);color:var(--red);}
+  .session-status.caution{border-color:#7a4f00;background:var(--yellow-dim);color:var(--yellow);}
+
+  .countdown-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+  .countdown-card{
+    background:var(--bg4);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:18px;
+    text-align:center;
+  }
+  .countdown-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;}
+  .countdown-time{font-size:26px;font-weight:700;font-family:var(--mono);color:var(--gold);}
+  .countdown-sub{font-size:10px;color:var(--text-dim);margin-top:4px;font-family:var(--mono);}
+
+  .session-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 16px;
+    border-radius:var(--radius);
+    border:1px solid var(--border);
+    margin-bottom:8px;
+    background:var(--bg4);
+    font-size:13px;
+  }
+  .session-name{font-weight:600;}
+  .session-time{font-family:var(--mono);font-size:12px;color:var(--text-muted);}
+  .session-indicator{
+    width:10px;height:10px;
+    border-radius:50%;
+    background:var(--border-glow);
+  }
+  .session-indicator.on{background:var(--green);box-shadow:0 0 8px var(--green);}
+
+  /* ═══════════════════════════════════════════
+     TAB 4 — JOURNAL
+  ═══════════════════════════════════════════ */
+  .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+  .stat-card{
+    background:var(--bg4);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px;
+    text-align:center;
+  }
+  .stat-value{font-size:26px;font-weight:800;font-family:var(--mono);color:var(--text);}
+  .stat-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
+  .stat-sub{font-size:12px;margin-top:4px;}
+
+  .add-trade-form{
+    background:var(--bg4);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:22px;
+    margin-bottom:22px;
+  }
+  .form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .form-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+
+  .btn-primary{
+    padding:10px 22px;
+    border-radius:var(--radius);
+    border:none;
+    background:linear-gradient(135deg,#1a5e3a,var(--green-mid));
+    color:#fff;
+    font-size:13px;
+    font-weight:700;
+    transition:all .2s;
+    cursor:pointer;
+  }
+  .btn-primary:hover{background:linear-gradient(135deg,var(--green-mid),var(--green));transform:translateY(-1px);}
+  .btn-danger{
+    padding:6px 12px;
+    border-radius:6px;
+    border:1px solid var(--red-mid);
+    background:var(--red-dim);
+    color:var(--red);
+    font-size:11px;
+    font-weight:600;
+    transition:all .2s;
+    cursor:pointer;
+  }
+  .btn-danger:hover{background:var(--red-mid);}
+
+  .journal-table-wrap{overflow-x:auto;}
+  .journal-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12.5px;
+    min-width:800px;
+  }
+  .journal-table th{
+    padding:11px 14px;
+    text-align:left;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--text-muted);
+    border-bottom:1px solid var(--border);
+    background:var(--bg3);
+    white-space:nowrap;
+    font-weight:600;
+  }
+  .journal-table td{
+    padding:11px 14px;
+    border-bottom:1px solid var(--border);
+    vertical-align:middle;
+    color:var(--text);
+  }
+  .journal-table tr:hover td{background:rgba(255,255,255,.02);}
+  .result-win{color:var(--green);font-weight:700;}
+  .result-loss{color:var(--red);font-weight:700;}
+  .result-be{color:var(--yellow);font-weight:700;}
+  .pair-tag{
+    background:var(--blue-dim);
+    color:var(--blue);
+    padding:2px 8px;
+    border-radius:4px;
+    font-family:var(--mono);
+    font-weight:600;
+    font-size:11px;
+  }
+  .bias-bull{color:var(--green);font-weight:700;}
+  .bias-bear{color:var(--red);font-weight:700;}
+  .mono-val{font-family:var(--mono);font-size:12px;}
+  .empty-state{
+    text-align:center;
+    padding:40px;
+    color:var(--text-muted);
+  }
+  .empty-icon{font-size:36px;margin-bottom:8px;}
+  .empty-text{font-size:13px;}
+
+  /* ═══════════════════════════════════════════
+     TAB 5 — OB VALIDITY CHECKER
+  ═══════════════════════════════════════════ */
+  .quiz-step{display:none;}
+  .quiz-step.active{display:block;}
+  .quiz-progress{
+    display:flex;
+    gap:6px;
+    margin-bottom:24px;
+  }
+  .quiz-dot{
+    height:4px;
+    flex:1;
+    border-radius:2px;
+    background:var(--border);
+    transition:background .3s;
+  }
+  .quiz-dot.done{background:var(--green);}
+  .quiz-dot.current{background:var(--blue);}
+
+  .question-number{
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    color:var(--text-muted);
+    font-family:var(--mono);
+    margin-bottom:10px;
+  }
+  .question-text{
+    font-size:18px;
+    font-weight:700;
+    color:var(--text);
+    line-height:1.4;
+    margin-bottom:8px;
+  }
+  .question-hint{
+    font-size:12px;
+    color:var(--text-muted);
+    margin-bottom:24px;
+    line-height:1.5;
+  }
+  .answer-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .answer-btn{
+    padding:20px;
+    border-radius:var(--radius-lg);
+    border:2px solid var(--border);
+    background:var(--bg4);
+    cursor:pointer;
+    text-align:center;
+    transition:all .2s;
+    font-size:15px;
+    font-weight:700;
+  }
+  .answer-btn:hover{border-color:var(--border-glow);background:var(--bg3);}
+  .answer-btn.yes:hover, .answer-btn.yes.selected{
+    border-color:var(--green-mid);
+    background:var(--green-dim);
+    color:var(--green);
+  }
+  .answer-btn.no:hover, .answer-btn.no.selected{
+    border-color:var(--red-mid);
+    background:var(--red-dim);
+    color:var(--red);
+  }
+  .answer-sub{font-size:11px;color:var(--text-muted);margin-top:4px;font-weight:400;}
+
+  .verdict{
+    display:none;
+    text-align:center;
+    padding:36px;
+    border-radius:var(--radius-lg);
+    border:2px solid var(--border);
+    animation:fadeIn .4s;
+  }
+  .verdict.valid{border-color:var(--green-mid);background:var(--green-dim);}
+  .verdict.invalid{border-color:var(--red-mid);background:var(--red-dim);}
+  .verdict-icon{font-size:52px;margin-bottom:12px;}
+  .verdict-title{font-size:22px;font-weight:800;margin-bottom:8px;}
+  .verdict-reason{font-size:13px;color:var(--text-muted);line-height:1.6;max-width:460px;margin:0 auto 20px;}
+  .btn-reset{
+    padding:10px 24px;
+    border-radius:var(--radius);
+    border:1px solid var(--border-glow);
+    background:var(--bg3);
+    color:var(--text);
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all .2s;
+  }
+  .btn-reset:hover{background:var(--bg4);border-color:var(--text-muted);}
+
+  /* System config reference panel */
+  .config-ref{
+    background:var(--bg4);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px 18px;
+    margin-bottom:20px;
+    border-left:3px solid var(--accent);
+  }
+  .config-ref-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#a78bfa;margin-bottom:10px;font-weight:700;}
+  .config-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;}
+  .config-item{font-size:11px;font-family:var(--mono);}
+  .config-key{color:var(--text-muted);}
+  .config-val{color:var(--gold);font-weight:600;}
+
+  /* ═══════════════════════════════════════════
+     MISC UTILITIES
+  ═══════════════════════════════════════════ */
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  .animate-in{animation:fadeIn .3s ease;}
+
+  .divider{height:1px;background:var(--border);margin:18px 0;}
+  .section-title{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);font-weight:700;margin-bottom:14px;}
+
+  textarea.input-field{resize:vertical;min-height:70px;}
+  .form-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;}
+
+  /* Hamburger for mobile */
+  .hamburger{
+    display:none;
+    background:none;
+    border:none;
+    color:var(--text);
+    font-size:22px;
+    padding:4px;
+  }
+  .sidebar-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.7);
+    z-index:45;
+  }
+
+  /* ═══════════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════════ */
+  @media(max-width:900px){
+    .grid-4,.stat-cards{grid-template-columns:repeat(2,1fr);}
+    .form-grid,.form-grid-4{grid-template-columns:1fr 1fr;}
+    .grid-2{grid-template-columns:1fr;}
+    .grid-3{grid-template-columns:1fr;}
+  }
+  @media(max-width:680px){
+    .sidebar{
+      position:fixed;
+      left:-220px;
+      transition:left .3s;
+    }
+    .sidebar.open{left:0;}
+    .sidebar-overlay.open{display:block;}
+    .hamburger{display:block;}
+    .content{padding:16px;}
+    .topbar{padding:12px 16px;}
+    .grid-4,.stat-cards{grid-template-columns:1fr 1fr;}
+    .form-grid,.form-grid-4{grid-template-columns:1fr;}
+    .countdown-grid{grid-template-columns:1fr;}
+    .answer-grid{grid-template-columns:1fr;}
+    .clock-time{font-size:30px;}
+  }
+
+  /* Table note callout */
+  .callout{
+    padding:12px 16px;
+    border-radius:var(--radius);
+    font-size:12px;
+    line-height:1.5;
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    margin-bottom:16px;
+  }
+  .callout-info{background:var(--blue-dim);border:1px solid #1e3a5f;color:#93c5fd;}
+  .callout-warn{background:var(--yellow-dim);border:1px solid #7a4f00;color:var(--yellow);}
+  .callout-good{background:var(--green-dim);border:1px solid var(--green-mid);color:var(--green);}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR OVERLAY (mobile) -->
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">
+      <div class="logo-symbol">XAUUSD · M5</div>
+      <div class="logo-title">OB Assistant</div>
+      <div class="logo-sub">FBS-Demo · OB_Bot v1.0</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active" onclick="switchTab('checklist',this)" id="nav-checklist">
+        <span class="nav-icon">✅</span> Trade Checklist
+      </div>
+      <div class="nav-item" onclick="switchTab('calculator',this)" id="nav-calculator">
+        <span class="nav-icon">📐</span> RR Calculator
+      </div>
+      <div class="nav-item" onclick="switchTab('session',this)" id="nav-session">
+        <span class="nav-icon">🕐</span> Session Timer
+      </div>
+      <div class="nav-item" onclick="switchTab('journal',this)" id="nav-journal">
+        <span class="nav-icon">📒</span> Trade Journal
+      </div>
+      <div class="nav-item" onclick="switchTab('validator',this)" id="nav-validator">
+        <span class="nav-icon">🔍</span> OB Validator
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      risk: 0.5% · SL buf: 3 pip<br/>
+      impulse: 3 candles · age: 300 bars<br/>
+      TP1: 1:1 · TP2: 1:2 · BE at TP1
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+        <div class="topbar-title" id="topbar-title">Trade Checklist</div>
+      </div>
+      <div class="topbar-right">
+        <div class="live-badge">
+          <div class="live-dot"></div>
+          <span id="topbar-clock">--:--:--</span> EAT
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ════════════════════════════════════════
+           TAB 1 — CHECKLIST
+      ════════════════════════════════════════ -->
+      <div class="tab-panel active animate-in" id="tab-checklist">
+
+        <div class="config-ref">
+          <div class="config-ref-title">⚙ Active System Config</div>
+          <div class="config-grid">
+            <div class="config-item"><span class="config-key">Symbol: </span><span class="config-val">XAUUSD</span></div>
+            <div class="config-item"><span class="config-key">TF: </span><span class="config-val">M5</span></div>
+            <div class="config-item"><span class="config-key">Risk: </span><span class="config-val">0.5%</span></div>
+            <div class="config-item"><span class="config-key">TP2 RR: </span><span class="config-val">1:2</span></div>
+            <div class="config-item"><span class="config-key">SL Buf: </span><span class="config-val">3 pips</span></div>
+            <div class="config-item"><span class="config-key">Impulse: </span><span class="config-val">3 candles</span></div>
+            <div class="config-item"><span class="config-key">OB Age: </span><span class="config-val">≤300 bars</span></div>
+            <div class="config-item"><span class="config-key">Session UTC: </span><span class="config-val">08–20h</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Pre-Trade Checklist</div>
+            <div id="check-badge" class="card-badge badge-red">0 / 7</div>
+          </div>
+
+          <div class="progress-text">
+            <span id="progress-label">Complete all 7 conditions to unlock trade entry</span>
+            <span id="progress-pct">0%</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+          </div>
+
+          <!-- Item 1: HTF Bias -->
+          <div class="checklist-item" id="ci-1" onclick="toggleBiasItem(1)">
+            <div class="cb-wrap"><span class="cb-check">✓</span></div>
+            <div class="cb-label">
+              <div class="cb-main">HTF (1H / 15M) Bias Confirmed</div>
+              <div class="cb-sub">EMA filter: use_ema_filter=False (manual confirmation required)</div>
+              <div class="bias-row">
+                <button class="bias-btn bull" id="bias-bull" onclick="setBias('bull',event)">🟢 Bullish</button>
+                <button class="bias-btn bear" id="bias-bear" onclick="setBias('bear',event)">🔴 Bearish</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 2: OB from strong impulse -->
+          <div class="checklist-item" id="ci-2" onclick="toggleCheck(2)">
+            <div class="cb-wrap"><span class="cb-check">✓</span></div>
+            <div class="cb-label">
+              <div class="cb-main">OB formed from strong impulse that broke structure</div>
+              <div class="cb-sub">System requires ≥3 consecutive same-direction candles breaking prior swing (bos_lookback=5)</div>
+            </div>
+          </div>
+
+          <!-- Item 3: Price returned to OB -->
+          <div class="checklist-item" id="ci-3" onclick="toggleCheck(3)">
+            <div class="cb-wrap"><span class="cb-check">✓</span></div>
+            <div class="cb-label">
+              <div class="cb-main">Price has returned cleanly to the OB zone</div>
+              <div class="cb-sub">Retest must occur ≥5 bars after formation (min_retest_gap=5). OB must not be mitigated.</div>
+            </div>
+          </div>
+
+          <!-- Item 4: Confirmation candle -->
+          <div class="checklist-item" id="ci-4" onclick="toggleCheck(4)">
+            <div class="cb-wrap"><span class="cb-check">✓</span></div>
+            <div class="cb-label">
+              <div class="cb-main">Confirmation candle formed inside OB (engulf / wick / BOS)</div>
+              <div class="cb-sub">Bot: require_confirmation=False (zone touch triggers). Manual: look for wick_ratio ≥1.5 or engulfing</div>
+            </div>
+          </div>
+
+          <!-- Item 5: SL -->
+          <div class="checklist-item" id="ci-5" onclick="toggleCheck(5)">
+            <div class="cb-wrap"><span class="cb-check">✓</span></div>
+            <div class="cb-label">
+              <div class="cb-main">SL placed logically beyond the OB</div>
+              <div class="cb-sub">System uses OB bottom − 3 pips (BUY) or OB top + 3 pips (SELL). sl_buffer_pips=3</div>
+            </div>
+          </div>
+
+          <!-- Item 6: RR -->
+          <div class="checklist-item" id="ci-6" onclick="toggleCheck(6)">
+            <div class="cb-wrap"><span class="cb-check">✓</span></div>
+            <div class="cb-label">
+              <div class="cb-main">RR is at least 1:2</div>
+              <div class="cb-sub">System TP1=1:1 · TP2=1:2. Move SL to BE after TP1. Use the RR Calculator tab to confirm.</div>
+            </div>
+          </div>
+
+          <!-- Item 7: Session -->
+          <div class="checklist-item" id="ci-7" onclick="toggleCheck(7)">
+            <div class="cb-wrap"><span class="cb-check">✓</span></div>
+            <div class="cb-label">
+              <div class="cb-main">Currently in London or NY session</div>
+              <div class="cb-sub" id="session-hint-txt">London: 11:00–14:00 EAT · NY: 16:00–21:00 EAT · Bot session: 08–20 UTC</div>
+            </div>
+          </div>
+
+          <div style="margin-top:16px;">
+            <button class="take-trade-btn" id="take-trade-btn" onclick="takeTrade()">
+              🔒 Complete All Checks to Unlock Trade
+            </button>
+          </div>
+        </div>
+
+        <!-- Trade confirmation dialog (hidden by default) -->
+        <div id="trade-confirm" style="display:none;" class="card animate-in">
+          <div class="card-header">
+            <div class="card-title" style="color:var(--green);">✅ Trade Unlocked</div>
+            <div class="card-badge badge-green">READY</div>
+          </div>
+          <div class="callout callout-good">
+            🚀 All 7 conditions confirmed. You are cleared to enter this trade. Proceed with discipline. Remember: the system risks 0.5% per trade with TP2 at 1:2 RR.
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn-primary" onclick="logTradeFromChecklist()">Log This Trade →</button>
+            <button class="btn-reset" onclick="resetChecklist()">Reset Checklist</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           TAB 2 — RR CALCULATOR
+      ════════════════════════════════════════ -->
+      <div class="tab-panel animate-in" id="tab-calculator">
+        <div class="grid-2">
+          <!-- Inputs -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Trade Planner</div>
+              <div class="card-badge badge-accent">XAUUSD · pip=0.01</div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">Instrument</label>
+              <select class="input-field" id="calc-pair" onchange="calcRR()">
+                <option value="XAUUSD" data-pip="0.01">XAUUSD (Gold)</option>
+                <option value="EURUSD" data-pip="0.0001">EURUSD</option>
+                <option value="GBPUSD" data-pip="0.0001">GBPUSD</option>
+                <option value="USDJPY" data-pip="0.01">USDJPY</option>
+                <option value="GBPJPY" data-pip="0.01">GBPJPY</option>
+                <option value="AUDUSD" data-pip="0.0001">AUDUSD</option>
+                <option value="USDCAD" data-pip="0.0001">USDCAD</option>
+                <option value="XAGUSD" data-pip="0.001">XAGUSD (Silver)</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">Entry Price</label>
+              <input class="input-field" type="number" id="calc-entry" placeholder="e.g. 3120.50" step="0.01" oninput="calcRR()"/>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Stop Loss Price</label>
+              <input class="input-field" type="number" id="calc-sl" placeholder="e.g. 3118.00" step="0.01" oninput="calcRR()"/>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Take Profit Price (TP2)</label>
+              <input class="input-field" type="number" id="calc-tp" placeholder="e.g. 3125.00" step="0.01" oninput="calcRR()"/>
+            </div>
+
+            <div class="divider"></div>
+            <div class="section-title">Position Sizing</div>
+
+            <div class="form-row">
+              <div class="input-group" style="flex:1;">
+                <label class="input-label">Account Balance ($)</label>
+                <input class="input-field" type="number" id="calc-balance" placeholder="e.g. 10000" step="100" oninput="calcRR()" value="10000"/>
+              </div>
+              <div class="input-group" style="flex:1;">
+                <label class="input-label">Risk % (system: 0.5%)</label>
+                <input class="input-field" type="number" id="calc-risk-pct" placeholder="0.5" step="0.1" oninput="calcRR()" value="0.5"/>
+              </div>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Contract Size (system: 100 for Gold)</label>
+              <input class="input-field" type="number" id="calc-contract" placeholder="100" step="1" oninput="calcRR()" value="100"/>
+            </div>
+          </div>
+
+          <!-- Results -->
+          <div>
+            <div class="rr-display" id="rr-display">
+              <div class="rr-value" id="rr-value" style="color:var(--text-muted);">—</div>
+              <div class="rr-label">Risk : Reward Ratio</div>
+              <div class="rr-flag" id="rr-flag"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Calculation Results</div>
+                <div class="card-badge badge-blue" id="direction-badge">—</div>
+              </div>
+              <div class="calc-result">
+                <div class="calc-row"><label>Risk (pips)</label><span class="val" id="res-risk-pip">—</span></div>
+                <div class="calc-row"><label>Reward (pips)</label><span class="val" id="res-reward-pip">—</span></div>
+                <div class="calc-row"><label>Risk Amount ($)</label><span class="val" id="res-risk-usd">—</span></div>
+                <div class="calc-row"><label>TP1 Target (1:1 RR)</label><span class="val" id="res-tp1">—</span></div>
+                <div class="calc-row"><label>Position Size (lots)</label><span class="val good" id="res-lots">—</span></div>
+                <div class="calc-row"><label>Pip Value / lot</label><span class="val" id="res-pipval">—</span></div>
+                <div class="calc-row"><label>Potential Profit ($)</label><span class="val good" id="res-profit">—</span></div>
+              </div>
+
+              <div class="callout callout-info" style="margin-top:14px;">
+                💡 <b>System formula:</b> lots = (balance × risk%) ÷ (risk_pips × pip_value).  
+                SL buffer = 3 pips beyond OB boundary. BE moved to entry after TP1 hit.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           TAB 3 — SESSION TIMER
+      ════════════════════════════════════════ -->
+      <div class="tab-panel animate-in" id="tab-session">
+
+        <!-- Status banner -->
+        <div class="session-status" id="sess-status-banner">
+          <span id="sess-status-icon">⏳</span>
+          <span id="sess-status-text">Loading session status…</span>
+        </div>
+
+        <!-- Clocks -->
+        <div class="grid-2" style="margin-bottom:20px;">
+          <div class="clock-block">
+            <div class="clock-zone">🌍 UTC Time</div>
+            <div class="clock-time" id="utc-clock">--:--:--</div>
+            <div class="clock-date" id="utc-date">---</div>
+          </div>
+          <div class="clock-block">
+            <div class="clock-zone">🇰🇪 EAT (UTC+3)</div>
+            <div class="clock-time" id="eat-clock">--:--:--</div>
+            <div class="clock-date" id="eat-date">---</div>
+          </div>
+        </div>
+
+        <!-- Countdowns -->
+        <div class="countdown-grid">
+          <div class="countdown-card">
+            <div class="countdown-label">⏱ Next London Open (11:00 EAT)</div>
+            <div class="countdown-time" id="london-countdown">--:--:--</div>
+            <div class="countdown-sub" id="london-sub">08:00 UTC</div>
+          </div>
+          <div class="countdown-card">
+            <div class="countdown-label">⏱ Next NY Open (16:00 EAT)</div>
+            <div class="countdown-time" id="ny-countdown">--:--:--</div>
+            <div class="countdown-sub" id="ny-sub">13:00 UTC</div>
+          </div>
+        </div>
+
+        <!-- Session schedule -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Trading Session Schedule (EAT / UTC+3)</div>
+            <div class="card-badge badge-accent">FBS-Demo · XAUUSD</div>
+          </div>
+          <div id="session-list">
+            <div class="session-row">
+              <div>
+                <div class="session-name">🌏 Asian Session</div>
+                <div class="session-time">05:00 – 11:00 EAT (02:00–08:00 UTC)</div>
+              </div>
+              <div class="session-indicator" id="ind-asian"></div>
+            </div>
+            <div class="session-row">
+              <div>
+                <div class="session-name">🇬🇧 London Open</div>
+                <div class="session-time">11:00 – 14:00 EAT (08:00–11:00 UTC) — HIGH PRIORITY</div>
+              </div>
+              <div class="session-indicator" id="ind-london"></div>
+            </div>
+            <div class="session-row">
+              <div>
+                <div class="session-name">🇬🇧🇺🇸 London–NY Overlap</div>
+                <div class="session-time">14:00 – 19:00 EAT (11:00–16:00 UTC) — BEST LIQUIDITY</div>
+              </div>
+              <div class="session-indicator" id="ind-overlap"></div>
+            </div>
+            <div class="session-row">
+              <div>
+                <div class="session-name">🇺🇸 New York Session</div>
+                <div class="session-time">16:00 – 21:00 EAT (13:00–18:00 UTC) — HIGH PRIORITY</div>
+              </div>
+              <div class="session-indicator" id="ind-ny"></div>
+            </div>
+            <div class="session-row">
+              <div>
+                <div class="session-name">🌙 Off-Market</div>
+                <div class="session-time">21:00 – 05:00 EAT — AVOID TRADING</div>
+              </div>
+              <div class="session-indicator" id="ind-off"></div>
+            </div>
+          </div>
+          <div class="callout callout-info" style="margin-top:12px;">
+            ℹ️ Bot active window: <b>08:00–20:00 UTC (11:00–23:00 EAT)</b>. Manual trading recommended only during London Open and NY session for best OB performance.
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           TAB 4 — JOURNAL
+      ════════════════════════════════════════ -->
+      <div class="tab-panel animate-in" id="tab-journal">
+
+        <!-- Stats summary -->
+        <div class="stat-cards" id="stats-panel">
+          <div class="stat-card">
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-label">Total Trades</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value good" id="stat-winrate" style="color:var(--text-muted);">—</div>
+            <div class="stat-label">Win Rate</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-rr" style="color:var(--text-muted);">—</div>
+            <div class="stat-label">Avg RR</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-pf" style="color:var(--text-muted);">—</div>
+            <div class="stat-label">Profit Factor</div>
+          </div>
+        </div>
+
+        <!-- Add trade form -->
+        <div class="add-trade-form">
+          <div class="card-header" style="margin-bottom:14px;">
+            <div class="card-title">Log New Trade</div>
+            <div class="card-badge badge-green">XAUUSD · M5 System</div>
+          </div>
+          <div class="form-grid">
+            <div class="input-group">
+              <label class="input-label">Date & Time (EAT)</label>
+              <input class="input-field" type="datetime-local" id="j-datetime"/>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Pair / Instrument</label>
+              <select class="input-field" id="j-pair">
+                <option>XAUUSD</option>
+                <option>EURUSD</option>
+                <option>GBPUSD</option>
+                <option>USDJPY</option>
+                <option>GBPJPY</option>
+                <option>AUDUSD</option>
+                <option>XAGUSD</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Bias</label>
+              <select class="input-field" id="j-bias">
+                <option value="Bullish">🟢 Bullish</option>
+                <option value="Bearish">🔴 Bearish</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-grid-4">
+            <div class="input-group">
+              <label class="input-label">OB Timeframe</label>
+              <select class="input-field" id="j-tf">
+                <option>M5</option>
+                <option>M15</option>
+                <option>M1</option>
+                <option>M30</option>
+                <option>H1</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Entry</label>
+              <input class="input-field" type="number" id="j-entry" placeholder="3120.50" step="0.01"/>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Stop Loss</label>
+              <input class="input-field" type="number" id="j-sl" placeholder="3118.00" step="0.01"/>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Take Profit</label>
+              <input class="input-field" type="number" id="j-tp" placeholder="3125.00" step="0.01"/>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="input-group">
+              <label class="input-label">Result</label>
+              <select class="input-field" id="j-result">
+                <option value="Win">✅ Win</option>
+                <option value="Loss">❌ Loss</option>
+                <option value="BE">⚖️ Breakeven</option>
+                <option value="Open">🔵 Open</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Actual RR</label>
+              <input class="input-field" type="number" id="j-rr" placeholder="2.1" step="0.1"/>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Notes</label>
+              <input class="input-field" type="text" id="j-notes" placeholder="e.g. Clean retest, engulf confirmed"/>
+            </div>
+          </div>
+          <div style="margin-top:14px;">
+            <button class="btn-primary" onclick="addJournalEntry()" id="j-submit-btn">+ Log Trade</button>
+          </div>
+        </div>
+
+        <!-- Journal table -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Trade Log</div>
+            <div class="card-badge badge-blue" id="journal-count-badge">0 entries</div>
+          </div>
+          <div class="journal-table-wrap">
+            <table class="journal-table" id="journal-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Date/Time</th>
+                  <th>Pair</th>
+                  <th>Bias</th>
+                  <th>TF</th>
+                  <th>Entry</th>
+                  <th>SL</th>
+                  <th>TP</th>
+                  <th>RR</th>
+                  <th>Result</th>
+                  <th>Notes</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="journal-body">
+                <tr>
+                  <td colspan="12">
+                    <div class="empty-state">
+                      <div class="empty-icon">📒</div>
+                      <div class="empty-text">No trades logged yet. Add your first trade above.</div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           TAB 5 — OB VALIDATOR
+      ════════════════════════════════════════ -->
+      <div class="tab-panel animate-in" id="tab-validator">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">OB Validity Checker</div>
+              <div class="card-badge badge-accent">System Logic v1.0</div>
+            </div>
+
+            <div class="callout callout-info" style="margin-bottom:18px;">
+              ℹ️ Mirrors the <b>OrderBlockDetector</b> and <b>SignalEngine</b> rules from your system. Answer each question to validate an OB before entering manually.
+            </div>
+
+            <!-- Progress dots -->
+            <div class="quiz-progress" id="quiz-progress">
+              <div class="quiz-dot current" id="qd-1"></div>
+              <div class="quiz-dot" id="qd-2"></div>
+              <div class="quiz-dot" id="qd-3"></div>
+              <div class="quiz-dot" id="qd-4"></div>
+            </div>
+
+            <!-- Question 1 -->
+            <div class="quiz-step active" id="qs-1">
+              <div class="question-number">Question 1 of 4</div>
+              <div class="question-text">Did the impulse break a prior swing high/low?</div>
+              <div class="question-hint">
+                System check: <code>_is_impulse()</code> verifies the close of bar <i>i+n_imp</i> exceeds the prior swing high (bullish) or low (bearish) within a <b>lookback of 5 bars</b>. This is the BOS (Break of Structure) requirement.
+              </div>
+              <div class="answer-grid">
+                <button class="answer-btn yes" onclick="answerQ(1,'yes')">
+                  ✅ Yes
+                  <div class="answer-sub">Impulse broke prior structure</div>
+                </button>
+                <button class="answer-btn no" onclick="answerQ(1,'no')">
+                  ❌ No
+                  <div class="answer-sub">No clear structure break</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="quiz-step" id="qs-2">
+              <div class="question-number">Question 2 of 4</div>
+              <div class="question-text">Is this the LAST opposing candle before the impulse?</div>
+              <div class="question-hint">
+                System logic: walks backward from the impulse start (<code>for j in range(i, i-lb-1, -1)</code>) and selects the <b>first bearish candle</b> (for Bullish OB) or first bullish candle (for Bearish OB). Only the last opposing candle qualifies.
+              </div>
+              <div class="answer-grid">
+                <button class="answer-btn yes" onclick="answerQ(2,'yes')">
+                  ✅ Yes
+                  <div class="answer-sub">Last opposing candle before impulse</div>
+                </button>
+                <button class="answer-btn no" onclick="answerQ(2,'no')">
+                  ❌ No
+                  <div class="answer-sub">There is a closer opposing candle</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="quiz-step" id="qs-3">
+              <div class="question-number">Question 3 of 4</div>
+              <div class="question-text">Has this OB been tapped / mitigated before?</div>
+              <div class="question-hint">
+                System: <code>_mark_mitigated()</code> — Bullish OB is invalidated when price closes <b>below OB bottom</b>; Bearish OB when price closes <b>above OB top</b>. Once mitigated, <code>active=False</code>. A tapped OB loses its institutional interest.
+              </div>
+              <div class="answer-grid">
+                <button class="answer-btn no" onclick="answerQ(3,'no')">
+                  ✅ No (First Touch)
+                  <div class="answer-sub">Price is retesting for the first time</div>
+                </button>
+                <button class="answer-btn yes" onclick="answerQ(3,'yes')">
+                  ❌ Yes (Already tapped)
+                  <div class="answer-sub">Price has visited this zone before</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="quiz-step" id="qs-4">
+              <div class="question-number">Question 4 of 4</div>
+              <div class="question-text">Is the impulse at least 2–3 strong consecutive candles?</div>
+              <div class="question-hint">
+                System config: <code>impulse_candles=3</code>. All 3 candles must close in the same direction (<code>all_same</code> check). Strong candles = large bodies, minimal wicks. ATR filter also validates volatility: <code>atr_now ≥ 0.5 × atr_mean</code>.
+              </div>
+              <div class="answer-grid">
+                <button class="answer-btn yes" onclick="answerQ(4,'yes')">
+                  ✅ Yes
+                  <div class="answer-sub">3+ strong same-direction candles</div>
+                </button>
+                <button class="answer-btn no" onclick="answerQ(4,'no')">
+                  ❌ No
+                  <div class="answer-sub">Weak or mixed candles</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Verdict -->
+            <div class="verdict" id="ob-verdict">
+              <div class="verdict-icon" id="verdict-icon"></div>
+              <div class="verdict-title" id="verdict-title"></div>
+              <div class="verdict-reason" id="verdict-reason"></div>
+              <button class="btn-reset" onclick="resetQuiz()">🔄 Check Another OB</button>
+            </div>
+          </div>
+
+          <!-- Reference panel -->
+          <div>
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">System OB Rules (Source Reference)</div>
+                <div class="card-badge badge-accent">ob_detector.py</div>
+              </div>
+              <div class="config-ref" style="margin-bottom:12px;">
+                <div class="config-ref-title">📁 core/ob_detector.py — Detection Logic</div>
+                <div style="font-size:11px;font-family:var(--mono);color:var(--text-muted);line-height:1.8;">
+                  <span style="color:#a78bfa;">OB</span> = last opposing candle before a BOS impulse<br/>
+                  <span style="color:var(--green);">Bullish OB</span> = bearish candle before bullish impulse<br/>
+                  <span style="color:var(--red);">Bearish OB</span> = bullish candle before bearish impulse<br/>
+                  <span style="color:var(--gold);">impulse_candles</span> = 3 (consecutive closes same dir)<br/>
+                  <span style="color:var(--gold);">bos_lookback</span> = 5 (swing lookback for BOS)<br/>
+                  <span style="color:var(--gold);">max_ob_age_bars</span> = 300 (discard older OBs)<br/>
+                  <span style="color:var(--gold);">min_retest_gap</span> = 5 bars after formation
+                </div>
+              </div>
+              <div class="config-ref" style="margin-bottom:12px;">
+                <div class="config-ref-title">📁 core/signal_engine.py — Entry Conditions</div>
+                <div style="font-size:11px;font-family:var(--mono);color:var(--text-muted);line-height:1.8;">
+                  <span style="color:var(--gold);">require_confirmation</span> = False (zone touch = entry)<br/>
+                  <span style="color:var(--gold);">wick_ratio</span> = 1.5 (lower wick ÷ body for hammer)<br/>
+                  <span style="color:var(--gold);">engulf</span> = True (accept engulfing candles)<br/>
+                  <span style="color:var(--gold);">use_ema_filter</span> = False (EMA trend disabled)<br/>
+                  <span style="color:var(--gold);">min_atr_multiplier</span> = 0.5 (ATR volatility gate)<br/>
+                  Price in zone: low ≤ OB top AND close ≥ OB bottom (Bullish)
+                </div>
+              </div>
+              <div class="config-ref">
+                <div class="config-ref-title">📁 config/settings.py — Risk Parameters</div>
+                <div style="font-size:11px;font-family:var(--mono);color:var(--text-muted);line-height:1.8;">
+                  <span style="color:var(--gold);">risk_pct</span> = 0.5% per trade<br/>
+                  <span style="color:var(--gold);">sl_buffer_pips</span> = 3 pips beyond OB boundary<br/>
+                  <span style="color:var(--gold);">tp1_rr</span> = 1.0 (TP1 at 1:1, then move BE)<br/>
+                  <span style="color:var(--gold);">tp2_rr</span> = 2.0 (TP2 at 1:2 — MT5 TP target)<br/>
+                  <span style="color:var(--gold);">pip_size</span> = 0.01 (XAUUSD Gold)
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick OB visual -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Valid OB Pattern Guide</div>
+                <div class="card-badge badge-green">Reference</div>
+              </div>
+              <div style="font-size:12px;color:var(--text-muted);line-height:1.9;font-family:var(--mono);">
+                <div style="color:var(--green);font-weight:700;margin-bottom:6px;">🟢 BULLISH ORDER BLOCK</div>
+                <div>  Prior swing low ← reference</div>
+                <div>  [🔴 Bearish candle] ← THE OB (last bear)</div>
+                <div>  [🟢🟢🟢] Bullish impulse (3 candles)</div>
+                <div>  ↗ Breaks prior swing high (BOS)</div>
+                <div style="margin-top:8px;color:var(--text-dim);">Price returns → enters OB zone</div>
+                <div style="color:var(--green);">Entry at OB top, SL below OB bottom − 3 pips</div>
+
+                <div style="color:var(--red);font-weight:700;margin:14px 0 6px;">🔴 BEARISH ORDER BLOCK</div>
+                <div>  Prior swing high ← reference</div>
+                <div>  [🟢 Bullish candle] ← THE OB (last bull)</div>
+                <div>  [🔴🔴🔴] Bearish impulse (3 candles)</div>
+                <div>  ↘ Breaks prior swing low (BOS)</div>
+                <div style="margin-top:8px;color:var(--text-dim);">Price returns → enters OB zone</div>
+                <div style="color:var(--red);">Entry at OB bottom, SL above OB top + 3 pips</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+/* ═══════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════ */
+const TAB_TITLES = {
+  checklist:  'Trade Checklist',
+  calculator: 'RR Calculator',
+  session:    'Session Timer',
+  journal:    'Trade Journal',
+  validator:  'OB Validator',
+};
+
+function switchTab(name, navEl) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const panel = document.getElementById('tab-' + name);
+  if (panel) { panel.classList.add('active'); }
+  if (navEl)  { navEl.classList.add('active'); }
+  document.getElementById('topbar-title').textContent = TAB_TITLES[name] || name;
+  closeSidebar();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+/* ═══════════════════════════════════════════════════
+   CHECKLIST
+═══════════════════════════════════════════════════ */
+const checks = { 1:false, 2:false, 3:false, 4:false, 5:false, 6:false, 7:false };
+let selectedBias = null;
+
+function toggleCheck(n) {
+  checks[n] = !checks[n];
+  const el = document.getElementById('ci-' + n);
+  el.classList.toggle('checked', checks[n]);
+  updateChecklist();
+}
+
+function toggleBiasItem(n) {
+  /* clicking the item itself doesn't toggle — bias buttons do */
+}
+
+function setBias(bias, evt) {
+  evt.stopPropagation();
+  selectedBias = bias;
+  document.getElementById('bias-bull').classList.toggle('active', bias === 'bull');
+  document.getElementById('bias-bear').classList.toggle('active', bias === 'bear');
+  checks[1] = true;
+  document.getElementById('ci-1').classList.add('checked');
+  updateChecklist();
+}
+
+function updateChecklist() {
+  const total   = Object.values(checks).filter(Boolean).length;
+  const pct     = Math.round((total / 7) * 100);
+  const all     = total === 7;
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('check-badge').textContent  = total + ' / 7';
+  document.getElementById('check-badge').className    = 'card-badge ' + (all ? 'badge-green' : total >= 4 ? 'badge-yellow' : 'badge-red');
+
+  const btn = document.getElementById('take-trade-btn');
+  if (all) {
+    btn.classList.add('ready');
+    btn.textContent = '🚀 TAKE THIS TRADE';
+  } else {
+    btn.classList.remove('ready');
+    btn.textContent = `🔒 Complete ${7 - total} More Check${7 - total > 1 ? 's' : ''} to Unlock`;
+  }
+}
+
+function takeTrade() {
+  const all = Object.values(checks).every(Boolean);
+  if (!all) return;
+  document.getElementById('trade-confirm').style.display = 'block';
+  document.getElementById('trade-confirm').scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetChecklist() {
+  for (let k in checks) checks[k] = false;
+  selectedBias = null;
+  document.getElementById('bias-bull').classList.remove('active');
+  document.getElementById('bias-bear').classList.remove('active');
+  for (let i = 1; i <= 7; i++) {
+    document.getElementById('ci-' + i).classList.remove('checked');
+  }
+  document.getElementById('trade-confirm').style.display = 'none';
+  updateChecklist();
+}
+
+function logTradeFromChecklist() {
+  switchTab('journal', document.getElementById('nav-journal'));
+  // Pre-fill date
+  const now = new Date();
+  const eat = new Date(now.getTime() + 3 * 3600000);
+  document.getElementById('j-datetime').value = eat.toISOString().slice(0, 16);
+  if (selectedBias) {
+    document.getElementById('j-bias').value = selectedBias === 'bull' ? 'Bullish' : 'Bearish';
+  }
+  document.getElementById('j-pair').value = 'XAUUSD';
+  document.getElementById('j-tf').value   = 'M5';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ═══════════════════════════════════════════════════
+   RR CALCULATOR
+═══════════════════════════════════════════════════ */
+function calcRR() {
+  const pairEl    = document.getElementById('calc-pair');
+  const pip       = parseFloat(pairEl.selectedOptions[0]?.dataset.pip || 0.01);
+  const entry     = parseFloat(document.getElementById('calc-entry').value);
+  const sl        = parseFloat(document.getElementById('calc-sl').value);
+  const tp        = parseFloat(document.getElementById('calc-tp').value);
+  const balance   = parseFloat(document.getElementById('calc-balance').value) || 10000;
+  const riskPct   = parseFloat(document.getElementById('calc-risk-pct').value) || 0.5;
+  const contract  = parseFloat(document.getElementById('calc-contract').value) || 100;
+
+  if (isNaN(entry) || isNaN(sl) || isNaN(tp)) { clearCalc(); return; }
+
+  const isBuy     = entry < tp;
+  const riskRaw   = Math.abs(entry - sl);
+  const rewardRaw = Math.abs(tp - entry);
+  const riskPips  = riskRaw / pip;
+  const rewardPips= rewardRaw / pip;
+  const rr        = rewardPips > 0 && riskPips > 0 ? (rewardPips / riskPips) : 0;
+
+  const riskAmt   = balance * riskPct / 100;
+  const pipVal    = contract * pip;
+  const lots      = riskPips > 0 ? Math.max(0.01, Math.round((riskAmt / (riskPips * pipVal)) * 100) / 100) : 0;
+  const tp1       = isBuy ? entry + riskRaw : entry - riskRaw;
+  const potential = lots * rewardPips * pipVal;
+
+  const rrGood = rr >= 2;
+  const rrDisp = document.getElementById('rr-display');
+  rrDisp.className = 'rr-display ' + (rrGood ? 'good' : 'bad');
+  document.getElementById('rr-value').textContent = rr.toFixed(2) + ':1';
+  document.getElementById('rr-value').style.color = rrGood ? 'var(--green)' : 'var(--red)';
+  document.getElementById('rr-flag').textContent  = rrGood ? '✅ Meets 1:2 minimum (system TP2 requirement)' : '⚠️ Below 1:2 minimum — DO NOT TAKE THIS TRADE';
+  document.getElementById('rr-flag').style.color  = rrGood ? 'var(--green)' : 'var(--red)';
+
+  document.getElementById('direction-badge').textContent = isBuy ? '▲ BUY' : '▼ SELL';
+  document.getElementById('direction-badge').className   = 'card-badge ' + (isBuy ? 'badge-green' : 'badge-red');
+
+  document.getElementById('res-risk-pip').textContent   = riskPips.toFixed(1) + ' pips';
+  document.getElementById('res-reward-pip').textContent = rewardPips.toFixed(1) + ' pips';
+  document.getElementById('res-risk-usd').textContent   = '$' + riskAmt.toFixed(2);
+  document.getElementById('res-tp1').textContent        = tp1.toFixed(pip < 0.001 ? 5 : 2);
+  document.getElementById('res-lots').textContent       = lots.toFixed(2) + ' lots';
+  document.getElementById('res-pipval').textContent     = '$' + pipVal.toFixed(2);
+  document.getElementById('res-profit').textContent     = '$' + potential.toFixed(2);
+
+  const rrEl = document.getElementById('res-risk-pip').closest('.calc-result');
+  // color rr
+  ['res-risk-pip','res-reward-pip','res-risk-usd','res-tp1','res-lots','res-pipval','res-profit'].forEach(id => {
+    document.getElementById(id).className = 'val';
+  });
+  document.getElementById('res-lots').className   = 'val good';
+  document.getElementById('res-profit').className = rrGood ? 'val good' : 'val warn';
+}
+
+function clearCalc() {
+  ['rr-value','res-risk-pip','res-reward-pip','res-risk-usd','res-tp1','res-lots','res-pipval','res-profit'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = '—';
+  });
+  document.getElementById('rr-display').className = 'rr-display';
+  document.getElementById('rr-flag').textContent = '';
+}
+
+/* ═══════════════════════════════════════════════════
+   SESSION TIMER
+═══════════════════════════════════════════════════ */
+function pad(n){ return String(n).padStart(2,'0'); }
+
+function formatCountdown(ms) {
+  if (ms <= 0) return '00:00:00';
+  const s  = Math.floor(ms / 1000);
+  const h  = Math.floor(s / 3600);
+  const m  = Math.floor((s % 3600) / 60);
+  const sc = s % 60;
+  return `${pad(h)}:${pad(m)}:${pad(sc)}`;
+}
+
+function nextOccurrence(eatHour, eatMin, now) {
+  const eat = new Date(now.getTime() + 3 * 3600000); // UTC → EAT
+  const target = new Date(eat);
+  target.setUTCHours(eatHour - 3, eatMin, 0, 0); // EAT→UTC for target
+  if (target <= now) target.setUTCDate(target.getUTCDate() + 1);
+  return target - now;
+}
+
+function updateClocks() {
+  const now = new Date();
+  // UTC
+  document.getElementById('utc-clock').textContent =
+    `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`;
+  document.getElementById('utc-date').textContent =
+    now.toUTCString().slice(0, 16);
+
+  // EAT = UTC+3
+  const eatMs   = now.getTime() + 3 * 3600000;
+  const eat     = new Date(eatMs);
+  const eatH    = eat.getUTCHours();
+  const eatM    = eat.getUTCMinutes();
+  const eatS    = eat.getUTCSeconds();
+  document.getElementById('eat-clock').textContent = `${pad(eatH)}:${pad(eatM)}:${pad(eatS)}`;
+  document.getElementById('eat-date').textContent  = eat.toUTCString().slice(0, 16).replace('GMT','EAT');
+  document.getElementById('topbar-clock').textContent = `${pad(eatH)}:${pad(eatM)}:${pad(eatS)}`;
+
+  // Countdowns (London = 11:00 EAT, NY = 16:00 EAT)
+  document.getElementById('london-countdown').textContent = formatCountdown(nextOccurrence(11, 0, now));
+  document.getElementById('ny-countdown').textContent     = formatCountdown(nextOccurrence(16, 0, now));
+
+  // Session indicators (EAT hours)
+  const h = eatH + eatM / 60;
+  const sessions = {
+    asian:   h >= 5  && h < 11,
+    london:  h >= 11 && h < 14,
+    overlap: h >= 14 && h < 19,
+    ny:      h >= 16 && h < 21,
+    off:     h >= 21 || h < 5,
+  };
+
+  Object.keys(sessions).forEach(k => {
+    const el = document.getElementById('ind-' + k);
+    if (el) el.className = 'session-indicator' + (sessions[k] ? ' on' : '');
+  });
+
+  // Main status banner
+  const banner = document.getElementById('sess-status-banner');
+  const icon   = document.getElementById('sess-status-icon');
+  const txt    = document.getElementById('sess-status-text');
+  const utcH   = now.getUTCHours() + now.getUTCMinutes() / 60;
+
+  if ((h >= 11 && h < 14) || (h >= 16 && h < 21)) {
+    banner.className = 'session-status active';
+    icon.textContent = '🟢';
+    txt.textContent  = sessions.london
+      ? '🇬🇧 London Session Active — High-probability OB setups'
+      : '🇺🇸 New York Session Active — Strong institutional flow';
+  } else if (h >= 14 && h < 16) {
+    banner.className = 'session-status active';
+    icon.textContent = '🟢';
+    txt.textContent  = '🇬🇧🇺🇸 London–NY Overlap — BEST liquidity window';
+  } else if ((h >= 5 && h < 11) || (h >= 9 && h < 11)) {
+    banner.className = 'session-status caution';
+    icon.textContent = '🟡';
+    txt.textContent  = '🌏 Asian Session — Low volatility. Wait for London Open.';
+  } else {
+    banner.className = 'session-status avoid';
+    icon.textContent = '🔴';
+    txt.textContent  = '🌙 Off-Market / Dead Zone — Avoid trading';
+  }
+
+  // Checklist session hint
+  const sessionOK = (h >= 11 && h < 14) || (h >= 16 && h < 21) || (h >= 14 && h < 19);
+  document.getElementById('session-hint-txt').textContent =
+    sessionOK
+      ? `✅ Active session detected — ${sessions.london ? 'London' : sessions.overlap ? 'Overlap' : 'NY'} (EAT ${pad(eatH)}:${pad(eatM)})`
+      : `⚠️ Outside prime hours — London: 11:00–14:00 · NY: 16:00–21:00 EAT (now: ${pad(eatH)}:${pad(eatM)})`;
+}
+
+/* ═══════════════════════════════════════════════════
+   JOURNAL
+═══════════════════════════════════════════════════ */
+let journal = JSON.parse(localStorage.getItem('ob_journal') || '[]');
+
+function saveJournal() { localStorage.setItem('ob_journal', JSON.stringify(journal)); }
+
+function addJournalEntry() {
+  const entry = {
+    id:       Date.now(),
+    datetime: document.getElementById('j-datetime').value,
+    pair:     document.getElementById('j-pair').value,
+    bias:     document.getElementById('j-bias').value,
+    tf:       document.getElementById('j-tf').value,
+    entry_p:  parseFloat(document.getElementById('j-entry').value) || '',
+    sl:       parseFloat(document.getElementById('j-sl').value)    || '',
+    tp:       parseFloat(document.getElementById('j-tp').value)    || '',
+    rr:       parseFloat(document.getElementById('j-rr').value)    || '',
+    result:   document.getElementById('j-result').value,
+    notes:    document.getElementById('j-notes').value,
+  };
+  if (!entry.datetime) {
+    alert('Please select a date and time for the trade.');
+    return;
+  }
+  journal.unshift(entry);
+  saveJournal();
+  renderJournal();
+  clearJournalForm();
+}
+
+function deleteEntry(id) {
+  if (!confirm('Delete this trade entry?')) return;
+  journal = journal.filter(e => e.id !== id);
+  saveJournal();
+  renderJournal();
+}
+
+function clearJournalForm() {
+  ['j-datetime','j-entry','j-sl','j-tp','j-rr','j-notes'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+}
+
+function renderJournal() {
+  const tbody = document.getElementById('journal-body');
+  const countBadge = document.getElementById('journal-count-badge');
+  countBadge.textContent = journal.length + ' entr' + (journal.length === 1 ? 'y' : 'ies');
+
+  if (journal.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="12"><div class="empty-state"><div class="empty-icon">📒</div><div class="empty-text">No trades logged yet. Add your first trade above.</div></div></td></tr>`;
+    updateStats();
+    return;
+  }
+
+  tbody.innerHTML = journal.map((e, idx) => {
+    const resultClass = e.result === 'Win' ? 'result-win' : e.result === 'Loss' ? 'result-loss' : 'result-be';
+    const biasClass   = e.bias === 'Bullish' ? 'bias-bull' : 'bias-bear';
+    const biasIcon    = e.bias === 'Bullish' ? '▲' : '▼';
+    const rr          = e.rr ? e.rr.toFixed(2) : (e.entry_p && e.sl && e.tp ? calcRRValue(e.entry_p, e.sl, e.tp).toFixed(2) : '—');
+    return `
+      <tr>
+        <td style="color:var(--text-muted);font-family:var(--mono);">${journal.length - idx}</td>
+        <td class="mono-val" style="font-size:11px;">${e.datetime?.replace('T',' ') || '—'}</td>
+        <td><span class="pair-tag">${e.pair}</span></td>
+        <td><span class="${biasClass}">${biasIcon} ${e.bias}</span></td>
+        <td style="color:var(--text-muted);font-family:var(--mono);">${e.tf}</td>
+        <td class="mono-val">${e.entry_p || '—'}</td>
+        <td class="mono-val">${e.sl || '—'}</td>
+        <td class="mono-val">${e.tp || '—'}</td>
+        <td class="mono-val"><b>${rr}</b></td>
+        <td><span class="${resultClass}">${e.result === 'Win' ? '✅' : e.result === 'Loss' ? '❌' : e.result === 'BE' ? '⚖️' : '🔵'} ${e.result}</span></td>
+        <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-muted);font-size:11px;">${e.notes || '—'}</td>
+        <td><button class="btn-danger" onclick="deleteEntry(${e.id})">✕</button></td>
+      </tr>`;
+  }).join('');
+
+  updateStats();
+}
+
+function calcRRValue(entry, sl, tp) {
+  const risk   = Math.abs(entry - sl);
+  const reward = Math.abs(tp - entry);
+  return risk > 0 ? reward / risk : 0;
+}
+
+function updateStats() {
+  const total  = journal.length;
+  const closed = journal.filter(e => e.result === 'Win' || e.result === 'Loss');
+  const wins   = journal.filter(e => e.result === 'Win').length;
+  const losses = journal.filter(e => e.result === 'Loss').length;
+  const winRate= closed.length > 0 ? (wins / closed.length * 100).toFixed(1) + '%' : '—';
+
+  const rrVals = journal.filter(e => e.rr > 0).map(e => e.rr);
+  const rrCalc = journal.filter(e => !e.rr && e.entry_p && e.sl && e.tp)
+                        .map(e => calcRRValue(e.entry_p, e.sl, e.tp));
+  const allRR  = [...rrVals, ...rrCalc];
+  const avgRR  = allRR.length > 0 ? (allRR.reduce((a,b)=>a+b,0)/allRR.length).toFixed(2) : '—';
+
+  // Profit factor = total win RR / total loss count
+  const pf = wins > 0 && losses > 0 ? (wins / losses).toFixed(2) : wins > 0 ? '∞' : '—';
+
+  document.getElementById('stat-total').textContent   = total;
+  document.getElementById('stat-winrate').textContent = winRate;
+  document.getElementById('stat-winrate').style.color = closed.length > 0 ? (wins/closed.length >= 0.5 ? 'var(--green)' : 'var(--red)') : 'var(--text-muted)';
+  document.getElementById('stat-rr').textContent      = avgRR !== '—' ? avgRR + ':1' : '—';
+  document.getElementById('stat-rr').style.color      = avgRR !== '—' && parseFloat(avgRR) >= 2 ? 'var(--green)' : avgRR !== '—' ? 'var(--yellow)' : 'var(--text-muted)';
+  document.getElementById('stat-pf').textContent      = pf;
+  document.getElementById('stat-pf').style.color      = pf === '∞' || (pf !== '—' && parseFloat(pf) >= 1.5) ? 'var(--green)' : 'var(--red)';
+}
+
+/* ═══════════════════════════════════════════════════
+   OB VALIDATOR / QUIZ
+═══════════════════════════════════════════════════ */
+const quizAnswers = {};
+let currentQ = 1;
+
+// Reason map: question → (answer → invalidation reason)
+const FAIL_REASONS = {
+  1: { no:  'The impulse did NOT break a prior swing. Without a BOS (Break of Structure), there is no valid Order Block — this is just a random candle. Rule: <code>_is_impulse()</code> requires close > prior high (bullish) or close < prior low (bearish).' },
+  2: { no:  'This is NOT the last opposing candle before the impulse. The system\'s <code>ob_detector.py</code> walks backward from the impulse to find the CLOSEST opposing candle. Any closer candle invalidates this one.' },
+  3: { yes: 'This OB has already been tapped/mitigated. The system\'s <code>_mark_mitigated()</code> sets <code>active=False</code> when price closes through the OB. A tapped OB has lost its institutional significance — do not trade it.' },
+  4: { no:  'The impulse is not strong enough. The system requires <code>impulse_candles=3</code> consecutive same-direction closes. The ATR filter also checks volatility: <code>atr_now ≥ 0.5 × atr_mean</code>. Weak or mixed-body impulses are rejected.' },
+};
+
+function answerQ(qNum, answer) {
+  quizAnswers[qNum] = answer;
+  document.getElementById('qs-' + qNum).querySelectorAll('.answer-btn').forEach(b => b.classList.remove('selected'));
+  const clicked = document.querySelector(`#qs-${qNum} .answer-btn.${answer}`);
+  if (clicked) clicked.classList.add('selected');
+
+  // Check for immediate fail
+  const failRule = FAIL_REASONS[qNum];
+  if (failRule && failRule[answer]) {
+    setTimeout(() => showVerdict(false, failRule[answer]), 400);
+    return;
+  }
+
+  // Advance
+  setTimeout(() => {
+    if (qNum < 4) {
+      goToQ(qNum + 1);
+    } else {
+      // All passed
+      setTimeout(() => showVerdict(true, ''), 300);
+    }
+  }, 400);
+}
+
+function goToQ(n) {
+  document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('qs-' + n).classList.add('active');
+  currentQ = n;
+  updateQuizProgress(n);
+}
+
+function updateQuizProgress(n) {
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById('qd-' + i);
+    if (i < n)       dot.className = 'quiz-dot done';
+    else if (i === n) dot.className = 'quiz-dot current';
+    else              dot.className = 'quiz-dot';
+  }
+}
+
+function showVerdict(valid, reason) {
+  document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+  const v = document.getElementById('ob-verdict');
+  v.style.display = 'block';
+  v.className = 'verdict ' + (valid ? 'valid' : 'invalid');
+  document.getElementById('verdict-icon').textContent  = valid ? '✅' : '❌';
+  document.getElementById('verdict-title').textContent = valid ? 'VALID ORDER BLOCK ✅' : 'INVALID ORDER BLOCK ❌';
+  document.getElementById('verdict-title').style.color = valid ? 'var(--green)' : 'var(--red)';
+  document.getElementById('verdict-reason').innerHTML  = valid
+    ? 'All 4 criteria confirmed. This Order Block meets the system\'s institutional standards. Verify price is currently retesting the zone (≥5 bars after formation) and that the OB is within the 300-bar age limit before entering.'
+    : reason;
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('qd-' + i).className = 'quiz-dot done';
+  }
+}
+
+function resetQuiz() {
+  for (let k in quizAnswers) delete quizAnswers[k];
+  currentQ = 1;
+  document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('qs-1').classList.add('active');
+  document.getElementById('ob-verdict').style.display = 'none';
+  updateQuizProgress(1);
+  document.querySelectorAll('.answer-btn').forEach(b => b.classList.remove('selected'));
+}
+
+/* ═══════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  // Pre-fill journal date
+  const now = new Date();
+  const eat = new Date(now.getTime() + 3 * 3600000);
+  document.getElementById('j-datetime').value = eat.toISOString().slice(0, 16);
+
+  // Render journal
+  renderJournal();
+
+  // Start clock
+  updateClocks();
+  setInterval(updateClocks, 1000);
+
+  // Initial checklist state
+  updateChecklist();
+});
+</script>
+</body>
+</html>

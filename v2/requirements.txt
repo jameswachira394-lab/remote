@@ -1,0 +1,12 @@
+ccxt>=4.2.0
+pandas>=2.0.0
+numpy>=1.24.0
+PyYAML>=6.0
+APScheduler>=3.10.1
+
+# Optional depending on DB and Data Source choice:
+# psycopg2-binary>=2.9.9    # For PostgreSQL (AWS RDS)
+# yfinance>=0.2.36          # For yfinance testing adapter
+# MetaTrader5>=5.0.45       # For MT5 (Windows only)
+# watchtower>=3.0.1         # For AWS CloudWatch Logs
+# boto3>=1.34.0             # For AWS SNS and CloudWatch Logs
