@@ -35,7 +35,7 @@ def init(cfg: dict):
         # Verify by opening once
         with get() as conn:
             conn.execute("SELECT 1")
-        log.info(f"SQLite database initialised → {db_path}")
+        log.info(f"SQLite database initialised -> {db_path}")
 
     elif engine == "postgresql":
         _init_pg(cfg["postgresql"])

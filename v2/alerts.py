@@ -77,7 +77,7 @@ class AlertManager:
 
     def send_error(self, context: str, error: str):
         """Alert on system errors."""
-        msg = f"⚠️ ERROR [{context}]\n{error}"
+        msg = f"[!] ERROR [{context}]\n{error}"
         log.error(msg)
         if self._tg_cfg.get("enabled"):
             self._telegram(msg)
@@ -88,7 +88,7 @@ class AlertManager:
         """Announce bot startup."""
         mode = "DRY RUN" if dry_run else "LIVE"
         msg  = (
-            f"🟢 OB Trading Bot v2 started\n"
+            f"[+] OB Trading Bot v2 started\n"
             f"Mode: {mode}\n"
             f"Source: {source}\n"
             f"Pairs: {', '.join(pairs)}\n"
@@ -102,7 +102,7 @@ class AlertManager:
 
     def send_shutdown(self):
         """Announce graceful shutdown."""
-        msg = "🔴 OB Trading Bot v2 stopped."
+        msg = ">>> OB Trading Bot v2 stopped."
         log.info(msg)
         if self._tg_cfg.get("enabled"):
             self._telegram(msg)
@@ -151,11 +151,11 @@ class AlertManager:
     def _print_signal(self, sig: Signal):
         """Pretty-print signal to stdout."""
         line = "═" * 58
-        direction_icon = "▲" if sig.signal_type == "BUY" else "▼"
+        direction_icon = "[BUY]" if sig.signal_type == "BUY" else "[SELL]"
         bias_icon      = "▲" if sig.bias == "BULLISH" else "▼" if sig.bias == "BEARISH" else "─"
 
         print(f"\n{line}")
-        print(f"  🔔  OB SIGNAL  [{sig.session}]")
+        print(f"  [SIGNAL] OB SIGNAL  [{sig.session}]")
         print(f"  {direction_icon}  {sig.signal_type} {sig.pair}  |  TF: {sig.timeframe}")
         print(f"  Bias: {bias_icon} {sig.bias}  |  Confirm: {sig.confirmation}")
         print(f"{'-' * 58}")

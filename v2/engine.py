@@ -30,6 +30,8 @@ from v2.signals       import SignalGenerator
 from v2.alerts        import AlertManager
 from v2.risk_manager  import RiskManager
 from v2.execution.manager import ExecutionManager
+from v2.db import connection as db
+from v2.db import schema as db_schema
 
 log = logging.getLogger("engine")
 
@@ -51,6 +53,11 @@ class TradingEngine:
         self._pairs    = cfg.get("pairs", [])
         self._pair_syms= [p["symbol"] for p in self._pairs]
         self._bars_cfg = cfg.get("bars", {})
+
+        # Initialise database first (must happen before any component uses DB)
+        db.init(cfg.get("database", {}))
+        with db.get() as conn:
+            db_schema.create_all(conn)
 
         # Component initialisation
         self._feed      = DataFeed(cfg)
@@ -99,8 +106,8 @@ class TradingEngine:
 
         elapsed = (datetime.now(timezone.utc) - t_start).total_seconds()
         log.info(
-            f"──── Cycle #{self._cycle_count} done | "
-            f"signals={total_signals} | elapsed={elapsed:.1f}s ────"
+            f"---- Cycle #{self._cycle_count} done | "
+            f"signals={total_signals} | elapsed={elapsed:.1f}s ----"
         )
 
     def run_bias_update(self):

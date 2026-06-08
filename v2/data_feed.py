@@ -339,4 +339,4 @@ class DataFeed:
         )
         with db.get() as conn:
             conn.executemany(sql, rows)
-        log.debug(f"Upserted {len(rows)} candles → DB ({pair} {tf_norm})")
+        log.debug(f"Upserted {len(rows)} candles -> DB ({pair} {tf_norm})")
