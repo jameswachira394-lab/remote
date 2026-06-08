@@ -14,14 +14,14 @@ system:
 
 # ── DATA SOURCE ─────────────────────────────────────────────────
 # Choose ONE: "mt5" | "ccxt" | "yfinance"
-data_source: "ccxt"
+data_source: "mt5"
 
 mt5:
   path: "C:\\Program Files\\MetaTrader 5\\terminal64.exe"
   login: 10401216
   password: ":erBo0B{"
   server: "FBS-Demo"
-  timeout: 10000
+  timeout: 60000
   pip_size: 0.01                # XAUUSD = 0.01, EURUSD = 0.0001
   magic_number: 202501
   slippage: 3

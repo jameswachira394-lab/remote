@@ -49,7 +49,8 @@ class OrderBlock:
     __slots__ = (
         "id", "pair", "timeframe", "ob_type",
         "high", "low", "open", "close",
-        "timestamp", "formation_ts", "status", "tap_count", "bos_event_id"
+        "timestamp", "formation_ts", "status", "tap_count", "bos_event_id",
+        "created_at", "updated_at"
     )
 
     def __init__(self, **kw):
