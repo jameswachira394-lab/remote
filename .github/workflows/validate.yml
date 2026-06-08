@@ -1,0 +1,44 @@
+name: Trading Bot Validation
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Check Syntax
+        shell: powershell
+        run: |
+          Get-ChildItem -Recurse -Filter *.py | ForEach-Object {
+            python -m py_compile $_.FullName
+          }
+
+      - name: Verify Core Imports
+        run: |
+          python -c "import pandas"
+          python -c "import numpy"
+          python -c "import matplotlib"
+
+      - name: Validation Passed
+        run: echo "Trading bot validation successful"
