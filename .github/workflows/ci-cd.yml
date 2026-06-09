@@ -64,7 +64,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/trading-bot:latest
+          tags: jameswachira394/trading-bot:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -83,7 +83,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             # Pull latest image
-            docker pull ${{ secrets.DOCKER_USERNAME }}/trading-bot:latest
+            docker pull jameswachira394/trading-bot:latest
 
             # Stop and remove old container
             docker stop trading-bot || true
@@ -94,7 +94,7 @@ jobs:
               --name trading-bot \
               --restart unless-stopped \
               -p 8080:8080 \
-              ${{ secrets.DOCKER_USERNAME }}/trading-bot:latest
+              jameswachira394/trading-bot:latest
 
             # Clean up old images
             docker image prune -f
