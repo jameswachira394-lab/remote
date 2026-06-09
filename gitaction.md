@@ -30,7 +30,7 @@ You make changes in your IDE
   - pulls the new Docker image
   - stops the old running container
   - starts the new container with your changes
-  - cleans up old images
+  - cleans up old imagess
            │
            ▼
   🚀 Your trading bot is live with new changes
