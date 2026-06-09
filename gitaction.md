@@ -19,7 +19,7 @@ You make changes in your IDE
   - if this FAILS → stops here, nothing deploys
            │
            ▼
-  ✅ Job 2: BUILD & PUSH
+  ✅ Job 2: BUILD & PUSH code
   - builds your Docker image
   - pushes it to Docker Hub
   - if this FAILS → stops here, EC2 not touched
