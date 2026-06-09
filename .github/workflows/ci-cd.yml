@@ -64,7 +64,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: jameswachira394/trading-bot:latest
+          tags: verlity/trading-bot:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
