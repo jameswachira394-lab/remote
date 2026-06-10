@@ -1,6 +1,6 @@
- name: CI/CD Pipeline
+name: CI/CD Pipeline
 
- on:
+on:
   push:
     branches:
       - main
@@ -8,7 +8,7 @@
     branches:
       - main
 
- jobs:
+jobs:
   validate:
     name: Validate Python Code
     runs-on: windows-latest        # ✅ matches your EC2 OS
@@ -50,14 +50,20 @@
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
+      - name: Check secret exists
+        run: |
+          echo "Key length: ${#EC2_KEY}"
+        env:
+          EC2_KEY: ${{ secrets.EC2_SSH_KEY }}
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          debug: true
           script: |
             cd C:\trading-bot
             git pull
             python main.py
-        
