@@ -34,3 +34,5 @@ You make changes in your IDE
            │
            ▼
   🚀 Your trading bot is live with new changes
+ 
+     
