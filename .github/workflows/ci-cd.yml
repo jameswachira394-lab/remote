@@ -47,16 +47,13 @@ jobs:
 
     steps:
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
+          username: Administrator
           key: ${{ secrets.EC2_SSH_KEY }}
-          debug: true
           script: |
-            cmd /c "
-              cd /d C:\Users\Administrator\apps\remote &&
-              git pull origin main &&
-              taskkill /IM python.exe /F >nul 2>&1 || echo No process running &&
-              start /B pythonw main.py
-            "
+            cd C:\Users\Administrator\apps\remote
+            git pull origin main
+            pip install -r requirements.txt
+            powershell Start-Process python -ArgumentList "main.py" -WorkingDirectory "C:\Users\Administrator\apps\remote"
