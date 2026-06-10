@@ -33,6 +33,6 @@ You make changes in your IDE
   - cleans up old images
            │
            ▼
-  🚀 Your trading bot is live with new changes
+  🚀 Your trading bot is live with new changes2
  
      
