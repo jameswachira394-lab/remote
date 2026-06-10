@@ -64,6 +64,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           debug: true
           script: |
-            cd C:\apps\trading-bot
+            cd C:\apps\remote
             git pull
             python main.py
