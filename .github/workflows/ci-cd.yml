@@ -50,22 +50,14 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
-      - name: SSH into Windows EC2 and Deploy
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Navigate to bot directory
             cd C:\trading-bot
-
-            # Pull latest code from GitHub
-            git pull origin main
-
-            # Install any new dependencies
-            pip install -r requirements.txt
-
-            # Restart the trading bot service
-            Stop-Service -Name "TradingBot" -Force -ErrorAction SilentlyContinue
-            Start-Service -Name "TradingBotSS"
+            git pull
+            python main.py
+        
