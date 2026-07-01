@@ -20,7 +20,7 @@ ob_mt5_system/
 │   └── chart_exporter.py   # Chart snapshots on signal
 ├── logs/                   # Auto-created log files
 ├── data/                   # Cached bar data (CSV)
-└── charts/                 # Signal chart snapshots
+└── charts/                 # Signal chart snapshot
 ```
 ## Quick Start
 1. Install: `pip install MetaTrader5 pandas numpy matplotlib`
