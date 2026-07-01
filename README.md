@@ -29,4 +29,6 @@ ob_mt5_system/
 ## Requirements
 - MetaTrader5 terminal installed and logged in
 - Python 3.8+ (Windows or Wine on Linux)
-- pip packages: MetaTrader5, pandas, numpy, matplotlib
+- pip packages: MetaTrader5, pandas, numpy, matplotlibs 
+
+remote desktop application on EC2 instances 
