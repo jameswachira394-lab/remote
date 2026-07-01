@@ -11,7 +11,7 @@ ob_mt5_system/
 │   ├── signal_engine.py    # Retest + confirmation logic
 │   └── risk_manager.py     # Position sizing, SL/TP calc
 ├── mt5/
-│   ├── connector.py        # MT5 connect/disconnect/health
+│   ├── connector.py        # MT5 connect/disconnect/healths
 │   ├── order_executor.py   # Place/modify/close orders
 │   └── position_manager.py # Monitor open trades, move to BE
 ├── utils/
