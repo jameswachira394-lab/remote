@@ -16,7 +16,7 @@ You make changes in your IDE
   - installs dependencies
   - checks Python syntax
   - verifies imports
-  - if this FAILS → stops here, nothing deploys
+  - if this FAILS → stops here, nothing deploy
            │
            ▼
   ✅ Job 2: BUILD & PUSH code
