@@ -26,7 +26,7 @@ You make changes in your IDE
            │
            ▼
   ✅ Job 3: DEPLOY
-  - SSHs into your EC2 (3.105.157.60)d
+  - SSHs into your EC2 
   - pulls the new Docker image
   - stops the old running container
   - starts the new container with your changes
