@@ -32,4 +32,4 @@ ob_mt5_system/
 - pip packages: MetaTrader5, pandas, numpy, matplotlibs 
 
 remote desktop application on EC2 instance 
-a working CI/CD pipelines
+a working CI/CD pipeliness
