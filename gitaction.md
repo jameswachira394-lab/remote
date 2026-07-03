@@ -2,7 +2,7 @@ You make changes in your IDE
            │
            ▼
     git add .
-    git commit -m "your message"
+    git commit -m "your messages"
     git push origin main
            │
            ▼
