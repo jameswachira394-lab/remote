@@ -31,5 +31,5 @@ ob_mt5_system/
 - Python 3.8+ (Windows or Wine on Linux)
 - pip packages: MetaTrader5, pandas, numpy, matplotlib
 
-remote desktop application on EC2 instance 
+remote desktop application on EC2 instances
 a working CI/CD pipelines
