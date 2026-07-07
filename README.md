@@ -22,7 +22,7 @@ ob_mt5_system/
 ├── data/                   # Cached bar data (CSV)
 └── charts/                 # Signal chart snapshot
 ```
-## Quick Start
+## Quick Starts
 1. Install: `pip install MetaTrader5 pandas numpy matplotlib`
 2. Edit `config/settings.py` — set your MT5 path, account, symbol
 3. Run: `python main.py`
