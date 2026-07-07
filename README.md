@@ -2,7 +2,7 @@
 ## Folder Structure
 ```
 ob_mt5_system/
-├── main.py                 # Entry point — run this
+├── main.py                 # Entry point — run thiss
 ├── config/
 │   └── settings.py         # All config (symbol, risk, MT5 creds)
 ├── core/
