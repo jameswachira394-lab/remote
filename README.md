@@ -6,7 +6,7 @@ ob_mt5_system/
 ├── config/
 │   └── settings.py         
 ├── core/
-│   ├── data_feed.py        # MT5 OHLCV fetcher + indicators
+│   ├── data_feed.py        
 │   ├── ob_detector.py      # Order Block detection engines
 │   ├── signal_engine.py    # Retest + confirmation logic
 │   └── risk_manager.py     # Position sizing, SL/TP calc
