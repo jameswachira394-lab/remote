@@ -4,7 +4,7 @@
 ob_mt5_system/
 ├── main.py                 
 ├── config/
-│   └── settings.py         # All config (symbol, risk, MT5 creds)
+│   └── settings.py         
 ├── core/
 │   ├── data_feed.py        # MT5 OHLCV fetcher + indicators
 │   ├── ob_detector.py      # Order Block detection engines
